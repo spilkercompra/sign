@@ -59,8 +59,15 @@ namespace Sign.Cli
             }
         }
 
+        internal static Func<IServiceProviderFactory?, Parser>? ParserFactory { get; set; }
+
         internal static Parser CreateParser(IServiceProviderFactory? serviceProviderFactory = null)
         {
+            if (ParserFactory != null)
+            { 
+              return ParserFactory(serviceProviderFactory);
+            }
+
             SignCommand command = new(serviceProviderFactory);
 
             return new CommandLineBuilder(command)

@@ -11,8 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		.vsts-ci.yml = .vsts-ci.yml
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		Directory.Packages.props = Directory.Packages.props
 		global.json = global.json
+		launchSettings.json = launchSettings.json
 		NuGet.Config = NuGet.Config
+		SdkTools.props = SdkTools.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sign.Core", "src\Sign.Core\Sign.Core.csproj", "{8781DB2C-CF89-456D-BE9D-D7EF8333F5EC}"
@@ -23,7 +28,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sign.Core.Test", "test\Sign
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sign.Cli", "src\Sign.CLI\Sign.Cli.csproj", "{A54EAFBE-AB23-48F7-86C5-C91ACEEDF509}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sign.Cli.Test", "test\Sign.Cli.Test\Sign.Cli.Test.csproj", "{3C6FC0EB-F5B9-430C-B420-4DEC6B390768}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sign.Cli.Test", "test\Sign.Cli.Test\Sign.Cli.Test.csproj", "{3C6FC0EB-F5B9-430C-B420-4DEC6B390768}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nGroup.Sign.Pkcs11", "src\nGroup.Sign\nGroup.Sign.Pkcs11\nGroup.Sign.Pkcs11.csproj", "{B8D4D5A2-0673-4ADA-875B-AD3CA7363FA3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nGroup.Sign.Pkcs11.WebApi", "src\nGroup.Sign\nGroup.Sign.Pkcs11.WebApi\nGroup.Sign.Pkcs11.WebApi.csproj", "{F8CCB20C-72B8-434B-8408-D8B834657EFF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nGroup.Sign.Cli", "src\nGroup.Sign\nGroup.Sign.Cli\nGroup.Sign.Cli.csproj", "{D232464A-8DCA-4F42-A482-E867A4616842}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +58,18 @@ Global
 		{3C6FC0EB-F5B9-430C-B420-4DEC6B390768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C6FC0EB-F5B9-430C-B420-4DEC6B390768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C6FC0EB-F5B9-430C-B420-4DEC6B390768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8D4D5A2-0673-4ADA-875B-AD3CA7363FA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8D4D5A2-0673-4ADA-875B-AD3CA7363FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8D4D5A2-0673-4ADA-875B-AD3CA7363FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8D4D5A2-0673-4ADA-875B-AD3CA7363FA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8CCB20C-72B8-434B-8408-D8B834657EFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8CCB20C-72B8-434B-8408-D8B834657EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8CCB20C-72B8-434B-8408-D8B834657EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8CCB20C-72B8-434B-8408-D8B834657EFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D232464A-8DCA-4F42-A482-E867A4616842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D232464A-8DCA-4F42-A482-E867A4616842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D232464A-8DCA-4F42-A482-E867A4616842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D232464A-8DCA-4F42-A482-E867A4616842}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,6 +79,9 @@ Global
 		{67DCC7B7-C98D-452E-AE69-1F3E81833D34} = {780818DD-6B52-47C8-AC54-71448DF822BD}
 		{A54EAFBE-AB23-48F7-86C5-C91ACEEDF509} = {92C73EE1-4EF3-4721-B6A9-9F458A673CA3}
 		{3C6FC0EB-F5B9-430C-B420-4DEC6B390768} = {780818DD-6B52-47C8-AC54-71448DF822BD}
+		{B8D4D5A2-0673-4ADA-875B-AD3CA7363FA3} = {92C73EE1-4EF3-4721-B6A9-9F458A673CA3}
+		{F8CCB20C-72B8-434B-8408-D8B834657EFF} = {92C73EE1-4EF3-4721-B6A9-9F458A673CA3}
+		{D232464A-8DCA-4F42-A482-E867A4616842} = {92C73EE1-4EF3-4721-B6A9-9F458A673CA3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7AA1043F-37A2-404F-8EC3-34C747C1CEB7}

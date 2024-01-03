@@ -31,4 +31,27 @@
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="7.0.1" />
     <PackageVersion Include="System.Text.Json" Version="7.0.3" />
   </ItemGroup>
+  <!-- nGroup.Sign -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.SourceLink.AzureDevOpsServer.Git" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageVersion Include="NSwag.ApiDescription.Client" Version="13.18.2" />
+    <PackageVersion Include="Pkcs11Interop" Version="5.1.2" />
+    <PackageVersion Include="Pkcs11Interop.X509Store" Version="0.4.0" />
+    <PackageVersion Include="Polly.Core" Version="8.2.1" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.AzureDevOpsServer.Git">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SourceLinkAzureDevOpsServerGitHost Include="support.ngroup.info" />
+  </ItemGroup>
 </Project>

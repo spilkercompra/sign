@@ -1,0 +1,24 @@
+﻿{
+  "Pkcs11TokenAccessOptions": {
+    "Pkcs11LibraryPaths": [
+      "c:\\SoftHSM2\\lib\\softhsm2-x64.dll",
+      "c:\\Windows\\System32\\eTPKCS11.dll"
+    ],
+    "EnvironmentVariables": {
+      "SOFTHSM2_CONF": "C:\\SoftHSM2\\etc\\softhsm2.conf"
+    },
+    "TokenIdsAndTokenPins": {
+      "351DB0446DDB65EF": "XXXX",
+      "80fc0e2ce554516b": "abcd"
+    },
+    "CredentialsAndTokenIds": {
+      "skriptuser": [
+        "351DB0446DDB65EF"
+      ],
+      "spilker": [
+        "351DB0446DDB65EF",
+        "80fc0e2ce554516b"
+      ]
+    }
+  }
+}

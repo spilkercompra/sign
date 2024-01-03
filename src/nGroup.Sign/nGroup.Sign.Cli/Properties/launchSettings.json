@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "nGroup.Sign.Cli remote": {
+      "commandName": "Project",
+      "commandLineArgs": "code pkcs11-token-remote *.dll -kvc 9505299957EED70137B0CD033DDB3F2AA027A6DB -d \"eEvolution GmbH & Co. KG\" -u http://eEvolution.de -kvu https://localhost:7036 -kvt spilker -kvi nGroup.Sign -kvs Ts52Xavc8hM -o signed\\"
+    },
+    "nGroup.Sign.Cli local": {
+      "commandName": "Project",
+      "commandLineArgs": "code pkcs11-token-local *.dll -kvc 9505299957EED70137B0CD033DDB3F2AA027A6DB -d \"eEvolution GmbH & Co. KG\" -u http://eEvolution.de -kvu https://localhost:7036 -kvt spilker -kvi nGroup.Sign -kvs Ts52Xavc8hM -o signed\\"
+    }
+  }
+}

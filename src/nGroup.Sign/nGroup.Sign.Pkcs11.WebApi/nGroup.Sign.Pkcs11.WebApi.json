@@ -1,0 +1,518 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "nGroup.Sign.Pkcs11.WebApi, Version=42.42.42.42, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+    "version": "1.0"
+  },
+  "paths": {
+    "/RemoteSign/GetCertificate": {
+      "get": {
+        "tags": [
+          "RemoteSign"
+        ],
+        "parameters": [
+          {
+            "name": "credential",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "certificateName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/RemoteSign/GetTokenInfos": {
+      "get": {
+        "tags": [
+          "RemoteSign"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TokenInfos"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TokenInfos"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TokenInfos"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/RemoteSign/RsaSignHash": {
+      "post": {
+        "tags": [
+          "RemoteSign"
+        ],
+        "parameters": [
+          {
+            "name": "credential",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "certificateName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hash": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "hashAlgorithmName": {
+                    "type": "string"
+                  },
+                  "signaturePaddingMode": {
+                    "$ref": "#/components/schemas/RSASignaturePaddingMode"
+                  }
+                }
+              },
+              "encoding": {
+                "hash": {
+                  "style": "form"
+                },
+                "hashAlgorithmName": {
+                  "style": "form"
+                },
+                "signaturePaddingMode": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/RemoteSign/RsaVerifyHash": {
+      "post": {
+        "tags": [
+          "RemoteSign"
+        ],
+        "parameters": [
+          {
+            "name": "credential",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "certificateName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hash": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "signature": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "hashAlgorithmName": {
+                    "type": "string"
+                  },
+                  "signaturePaddingMode": {
+                    "$ref": "#/components/schemas/RSASignaturePaddingMode"
+                  }
+                }
+              },
+              "encoding": {
+                "hash": {
+                  "style": "form"
+                },
+                "signature": {
+                  "style": "form"
+                },
+                "hashAlgorithmName": {
+                  "style": "form"
+                },
+                "signaturePaddingMode": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LibraryInfo": {
+        "type": "object",
+        "properties": {
+          "cryptokiVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "manufacturerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "flags": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "libraryDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "libraryVersion": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RSASignaturePaddingMode": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "SlotFlags": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tokenPresent": {
+            "type": "boolean"
+          },
+          "removableDevice": {
+            "type": "boolean"
+          },
+          "hardwareSlot": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SlotInfo": {
+        "type": "object",
+        "properties": {
+          "slotId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "slotDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "manufacturerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "slotFlags": {
+            "$ref": "#/components/schemas/SlotFlags"
+          },
+          "hardwareVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "firmwareVersion": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenFlags": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rng": {
+            "type": "boolean"
+          },
+          "writeProtected": {
+            "type": "boolean"
+          },
+          "loginRequired": {
+            "type": "boolean"
+          },
+          "userPinInitialized": {
+            "type": "boolean"
+          },
+          "restoreKeyNotNeeded": {
+            "type": "boolean"
+          },
+          "clockOnToken": {
+            "type": "boolean"
+          },
+          "protectedAuthenticationPath": {
+            "type": "boolean"
+          },
+          "dualCryptoOperations": {
+            "type": "boolean"
+          },
+          "tokenInitialized": {
+            "type": "boolean"
+          },
+          "secondaryAuthentication": {
+            "type": "boolean"
+          },
+          "userPinCountLow": {
+            "type": "boolean"
+          },
+          "userPinFinalTry": {
+            "type": "boolean"
+          },
+          "userPinLocked": {
+            "type": "boolean"
+          },
+          "userPinToBeChanged": {
+            "type": "boolean"
+          },
+          "soPinCountLow": {
+            "type": "boolean"
+          },
+          "soPinFinalTry": {
+            "type": "boolean"
+          },
+          "soPinLocked": {
+            "type": "boolean"
+          },
+          "soPinToBeChanged": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenInfo": {
+        "type": "object",
+        "properties": {
+          "slotId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "manufacturerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "model": {
+            "type": "string",
+            "nullable": true
+          },
+          "serialNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "tokenFlags": {
+            "$ref": "#/components/schemas/TokenFlags"
+          },
+          "maxSessionCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sessionCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maxRwSessionCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rwSessionCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maxPinLen": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "minPinLen": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPublicMemory": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "freePublicMemory": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPrivateMemory": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "freePrivateMemory": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "hardwareVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "firmwareVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "utcTimeString": {
+            "type": "string",
+            "nullable": true
+          },
+          "utcTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenInfos": {
+        "type": "object",
+        "properties": {
+          "library": {
+            "$ref": "#/components/schemas/LibraryInfo"
+          },
+          "slots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SlotInfo"
+            },
+            "nullable": true
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenInfo"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

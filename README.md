@@ -1,3 +1,11 @@
+# nGroup Sign CLI
+
+upstream        https://github.com/dotnet/sign.git (fetch)
+
+## Ziel 
+Erweiterung von Sign CLI um nGroup.Sign.*, um unser Hardware-Codesigning-Zertifikat-Token für den automatisierten Build zu nutzen 
+und den Zugriff durch andere ehemalige Zertifikatsnutzer remote zu ermöglichen.
+
 # Sign CLI
 
 [<img align="right" src="https://xunit.net/images/dotnet-fdn-logo.png" width="100" />](https://www.dotnetfoundation.org/)
