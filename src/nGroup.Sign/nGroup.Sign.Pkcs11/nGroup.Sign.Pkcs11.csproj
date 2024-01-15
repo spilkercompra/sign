@@ -18,6 +18,7 @@
     </PackageReference>
     <PackageReference Include="Pkcs11Interop.X509Store" />
     <PackageReference Include="Polly.Core" />
+    <PackageReference Include="System.IO.Hashing" />
   </ItemGroup>
   <ItemGroup>
     <OpenApiReference Include="..\nGroup.Sign.Pkcs11.WebApi\nGroup.Sign.Pkcs11.WebApi.json" CodeGenerator="NSwagCSharp" Namespace="nGroup.Sign.Pkcs11.WebApi" ClassName="WebApiClient" Link="OpenAPIs\nGroup.Sign.Pkcs11.WebApi.json" />

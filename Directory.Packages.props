@@ -44,6 +44,7 @@
     <PackageVersion Include="Pkcs11Interop.X509Store" Version="0.4.0" />
     <PackageVersion Include="Polly.Core" Version="8.2.1" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageVersion Include="System.IO.Hashing" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.AzureDevOpsServer.Git">

@@ -5,6 +5,7 @@
 namespace nGroup.Sign.Pkcs11
 {
   using nGroup.Sign.Pkcs11.Client;
+  using nGroup.Sign.Pkcs11.Server;
   using System.Security.Cryptography;
   using System.Security.Cryptography.X509Certificates;
 
@@ -44,8 +45,9 @@ namespace nGroup.Sign.Pkcs11
       return this.pkcs11TokenClient.GetRsaAsync();
     }
 
-    public void Initialize(Uri keyVaultUrl, string credential, string certificateName)
+    public void Initialize(Uri keyVaultUrl, (string id, string clientId, string clientSecret) credentials, string certificateName)
     {
+      var credential = SimpleClientSecret.ToCredential(credentials.id, credentials.clientId, credentials.clientSecret);
       this.pkcs11TokenClient.Initialize(keyVaultUrl, credential, certificateName);
     }
 

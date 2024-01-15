@@ -12,6 +12,7 @@ namespace nGroup.Sign.Pkcs11.Server
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Net;
   using System.Reflection;
   using System.Security.Cryptography;
   using System.Security.Cryptography.X509Certificates;
@@ -202,7 +203,7 @@ namespace nGroup.Sign.Pkcs11.Server
 
       static Func<Pkcs11X509StoreInfo, Pkcs11SlotInfo, Pkcs11TokenInfo, Pkcs11X509CertificateInfo, bool> createValidateCredentialsPredicate(string credential)
       {
-        var tokenIdsAndTokenPinsForCredential = GetTokenIdsAndTokenPinsForCredential(credential);
+        var tokenIdsAndTokenPinsForCredential = GetValidTokenIdsAndTokenPinsForCredential(credential, throwException: false);
         return new Func<Pkcs11X509StoreInfo, Pkcs11SlotInfo, Pkcs11TokenInfo, Pkcs11X509CertificateInfo, bool>(
                                             (_, __, tokenInfo, ____) =>
                                             {
@@ -348,28 +349,51 @@ namespace nGroup.Sign.Pkcs11.Server
     private static Dictionary<string, byte[]> GetTokenIdsAndTokenPins(Pkcs11TokenAccessOptions options)
     {
       var tokenIdsAndTokenPins = options.TokenIdsAndTokenPins;
-      return tokenIdsAndTokenPins.ToDictionary(kvp => kvp.Key, kvp => ConvertUtils.Utf8StringToBytes(kvp.Value));
+      return tokenIdsAndTokenPins.ToDictionary(tokenAndPin => tokenAndPin.Key, tokenAndPin => ConvertUtils.Utf8StringToBytes(tokenAndPin.Value));
     }
 
-    private static Dictionary<string, byte[]> GetTokenIdsAndTokenPinsForCredential(string credential)
+    private static Dictionary<string, byte[]> GetValidTokenIdsAndTokenPinsForCredential(string credential, bool throwException)
     {
-      var options = GetOptions();
-      if (!options.CredentialsAndTokenIds.TryGetValue(credential, out var tokenIdsForCredential))
-      {
-        throw new ArgumentException($"Invalid Credentials {credential}", nameof(credential));
-      }
+      var credentials = SimpleClientSecret.FromCredential(credential);
 
-      var tokenIdsAndTokenPins = GetTokenIdsAndTokenPins(options);
-      var tokenIdsAndTokenPinsForCredential = new Dictionary<string, byte[]>();
-      foreach (var tokenId in tokenIdsForCredential)
+      var options = GetOptions();
+      if (!options.CredentialsAndTokenIds.TryGetValue(credentials.id, out var tokenIdsForCredential))
       {
-        if (tokenIdsAndTokenPins.TryGetValue(tokenId, out var tokenPin))
+        if (throwException)
         {
-          tokenIdsAndTokenPinsForCredential[tokenId] = tokenPin;
+          throw new ArgumentException($"Invalid Credentials {credential}", nameof(credential));
+        }
+        else
+        {
+          return new Dictionary<string, byte[]>();
         }
       }
 
-      return tokenIdsAndTokenPinsForCredential;
+      var tokenIdsAndTokenPins = GetTokenIdsAndTokenPins(options);
+      var validTokenIdsAndTokenPinsForCredential = new Dictionary<string, byte[]>();
+      foreach (var tokenId in tokenIdsForCredential)
+      {
+        if (tokenIdsAndTokenPins.TryGetValue(tokenId, out var tokenPin)
+           && SimpleClientSecret.VerifyClientSecret(
+                credentials.clientSecret,
+                credentials.id,
+                credentials.clientId,
+                tokenId,
+                ConvertUtils.BytesToUtf8String(tokenPin)))
+        {
+          validTokenIdsAndTokenPinsForCredential[tokenId] = tokenPin;
+        }
+      }
+
+      if (!validTokenIdsAndTokenPinsForCredential.Any())
+      {
+        if (throwException)
+        {
+          throw new ArgumentException($"Invalid Credentials {credential}", nameof(credential));
+        }
+      }
+
+      return validTokenIdsAndTokenPinsForCredential;
     }
 
     private static Pkcs11TokenAccessOptions LoadOptions()
@@ -434,7 +458,7 @@ namespace nGroup.Sign.Pkcs11.Server
 
     private static void ValidateCredentials(string credential)
     {
-      _ = GetTokenIdsAndTokenPinsForCredential(credential);
+      _ = GetValidTokenIdsAndTokenPinsForCredential(credential, throwException: true);
     }
 
     private static void ValidateTokenHealth()

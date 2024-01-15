@@ -45,24 +45,21 @@ namespace nGroup.Sign.Cli
       /////// Gets the Microsoft Entra tenant (directory) Id of the service principal
       /////// </summary>
       ////internal string TenantId { get; }
-      var tenantId = getTokenCredentialProperty(clientSecretCredential, "TenantId") ?? string.Empty;
+      var id = getTokenCredentialProperty(clientSecretCredential, "TenantId") ?? string.Empty;
 
       /////// <summary>
       /////// Gets the client (application) ID of the service principal
       /////// </summary>
       ////internal string ClientId { get; }
-      ////var clientId = getTokenCredentialProperty(clientSecretCredential, "ClientId") ?? string.Empty;
+      var clientId = getTokenCredentialProperty(clientSecretCredential, "ClientId") ?? string.Empty;
 
       /////// <summary>
       /////// Gets the client secret that was generated for the App Registration used to authenticate the client.
       /////// </summary>
       ////internal string ClientSecret { get; }
-      ////var clientSecret = getTokenCredentialProperty(clientSecretCredential, "ClientSecret") ?? string.Empty;
+      var clientSecret = getTokenCredentialProperty(clientSecretCredential, "ClientSecret") ?? string.Empty;
 
-      ////var credential = $"{Uri.EscapeDataString(tenantId)}&{Uri.EscapeDataString(clientId)}&{Uri.EscapeDataString(clientSecret)}";
-      var credential = tenantId;
-
-      pkcs11KeyVaultService.Initialize(keyVaultUrl, credential, certificateName);
+      pkcs11KeyVaultService.Initialize(keyVaultUrl, (id, clientId, clientSecret), certificateName);
 
       static string? getTokenCredentialProperty(ClientSecretCredential tokenCredential, string propertyName)
       {
