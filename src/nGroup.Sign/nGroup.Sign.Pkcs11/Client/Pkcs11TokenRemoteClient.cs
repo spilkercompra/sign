@@ -6,6 +6,7 @@ namespace nGroup.Sign.Pkcs11.Client
 {
   using nGroup.Sign.Pkcs11.WebApi;
   using System;
+  using System.Net;
   using System.Security.Cryptography;
   using System.Security.Cryptography.X509Certificates;
 
@@ -17,7 +18,8 @@ namespace nGroup.Sign.Pkcs11.Client
     {
       var handler = new SocketsHttpHandler
       {
-        PooledConnectionLifetime = TimeSpan.FromMinutes(15) // Recreate every 15 minutes
+        PooledConnectionLifetime = TimeSpan.FromMinutes(15), // Recreate every 15 minutes
+        Credentials = CredentialCache.DefaultNetworkCredentials
       };
       SharedClient = new HttpClient(handler);
     }
