@@ -8,7 +8,7 @@
       "SOFTHSM2_CONF": "C:\\SoftHSM2\\etc\\softhsm2.conf"
     },
     "TokenIdsAndTokenPins": {
-      "351DB0446DDB65EF": "XXXX",
+      "351DB0446DDBXXXX": "XXXX",
       "80fc0e2ce554516b": "abcd"
     },
     "CredentialsAndTokenIds": {
