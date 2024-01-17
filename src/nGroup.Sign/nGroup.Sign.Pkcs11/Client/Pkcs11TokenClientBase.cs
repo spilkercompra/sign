@@ -4,6 +4,7 @@
 
 namespace nGroup.Sign.Pkcs11.Client
 {
+  using nGroup.Sign.Pkcs11.Server;
   using System;
   using System.Security.Cryptography;
   using System.Security.Cryptography.X509Certificates;
@@ -12,9 +13,10 @@ namespace nGroup.Sign.Pkcs11.Client
   {
     #region Properties
 
-    public string? CertificateName { get; private set; }
-    public string? Credential { get; private set; }
-    public Uri? KeyVaultUrl { get; private set; }
+    public string? CertificateName { get; protected set; }
+    public string? Credential { get; protected set; }
+    public Uri? KeyVaultUrl { get; protected set; }
+    public IPkcs11TokenAccessApi? TokenAccessApi { get; protected set; }
 
     #endregion Properties
 
@@ -31,9 +33,12 @@ namespace nGroup.Sign.Pkcs11.Client
       {
         throw new InvalidOperationException("Not initialized.");
       }
-    }
 
-    public abstract Task<X509Certificate2> GetCertificateAsync();
+      if (pkcs11TokenClientBase.TokenAccessApi == null)
+      {
+        throw new InvalidOperationException("Not initialized.");
+      }
+    }
 
     public virtual Task<RSA> GetRsaAsync()
     {
@@ -47,9 +52,26 @@ namespace nGroup.Sign.Pkcs11.Client
       this.CertificateName = certificateName;
     }
 
-    internal abstract Task<byte[]> SignHashAsync(byte[] hash, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding);
+    internal virtual async Task<X509Certificate2> GetCertificateAsync()
+    {
+      EnsureInitialized(this);
+      var certificate = await this.TokenAccessApi!.GetCertificateAsync(this.Credential!, this.CertificateName!);
+      return new X509Certificate2(certificate);
+    }
 
-    internal abstract Task<bool> VerifyHashAsync(byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding);
+    internal virtual async Task<byte[]> SignHashAsync(byte[] hash, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
+    {
+      EnsureInitialized(this);
+      var signature = await this.TokenAccessApi!.RsaSignHashAsync(this.Credential!, this.CertificateName!, hash, hashAlgorithm, padding);
+      return signature;
+    }
+
+    internal virtual async Task<bool> VerifyHashAsync(byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
+    {
+      EnsureInitialized(this);
+      var result = await this.TokenAccessApi!.RsaVerifyHashAsync(this.Credential!, this.CertificateName!, hash, signature, hashAlgorithm, padding);
+      return result;
+    }
 
     #endregion Methods
   }

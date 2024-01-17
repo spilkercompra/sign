@@ -6,6 +6,7 @@ namespace nGroup.Sign.Pkcs11
 {
   using nGroup.Sign.Pkcs11.Client;
   using nGroup.Sign.Pkcs11.Server;
+  using nGroup.Sign.Pkcs11.WebApi;
   using System.Security.Cryptography;
   using System.Security.Cryptography.X509Certificates;
 
@@ -27,7 +28,7 @@ namespace nGroup.Sign.Pkcs11
       }
       else
       {
-        this.pkcs11TokenClient = new Pkcs11TokenRemoteClient();
+        this.pkcs11TokenClient = new Pkcs11TokenRemoteClient<KeysClient>();
       }
     }
 

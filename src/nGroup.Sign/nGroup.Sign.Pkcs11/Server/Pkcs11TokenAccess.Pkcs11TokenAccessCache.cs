@@ -4,7 +4,7 @@
 
 namespace nGroup.Sign.Pkcs11.Server
 {
-  public static partial class Pkcs11TokenAccess
+  internal static partial class Pkcs11TokenAccess
   {
     #region Classes
 

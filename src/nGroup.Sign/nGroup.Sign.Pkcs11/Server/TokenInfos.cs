@@ -4,7 +4,6 @@
 
 namespace nGroup.Sign.Pkcs11.Server
 {
-  using Net.Pkcs11Interop.HighLevelAPI;
   using System;
 
   public record TokenInfos(
@@ -40,7 +39,7 @@ namespace nGroup.Sign.Pkcs11.Server
     public string? FirmwareVersion { get; init; }
   }
 
-  public record SlotFlags : ISlotFlags
+  public record SlotFlags
   {
     public ulong Flags { get; init; }
 

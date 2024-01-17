@@ -63,8 +63,19 @@ namespace nGroup.Sign.Pkcs11.Server
 
     internal static (string id, string clientId, string clientSecret) FromCredential(string credential)
     {
-      var credentialParts = credential.Split('&');
-      var result = (Uri.UnescapeDataString(credentialParts[0]), Uri.UnescapeDataString(credentialParts[1]), Uri.UnescapeDataString(credentialParts[2]));
+      var credentialParts = credential
+                            .Split('&')
+                            .Select(item => Uri.UnescapeDataString(item))
+                            .ToArray();
+
+      var result = credentialParts switch
+      {
+        [var id, var clientId, var clientSecret, ..] => (id, clientId, clientSecret),
+        [var id, var clientId] => (id, clientId, ""),
+        [var id] => (id, "", ""),
+        _ => ("", "", "")
+      };
+
       return result;
     }
 

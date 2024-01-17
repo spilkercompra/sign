@@ -7,17 +7,16 @@ namespace nGroup.Sign.Pkcs11.Server
   using Net.Pkcs11Interop.Common;
   using Net.Pkcs11Interop.HighLevelAPI;
   using Net.Pkcs11Interop.X509Store;
-  using Newtonsoft.Json;
   using Polly;
   using System;
   using System.Collections.Generic;
   using System.Linq;
-  using System.Net;
   using System.Reflection;
   using System.Security.Cryptography;
   using System.Security.Cryptography.X509Certificates;
+  using ConvertUtils = nGroup.Sign.Pkcs11.ConvertUtils;
 
-  public static partial class Pkcs11TokenAccess
+  internal static partial class Pkcs11TokenAccess
   {
     #region Fields
 
@@ -102,7 +101,7 @@ namespace nGroup.Sign.Pkcs11.Server
                 }
               }
 
-              result[i] = JsonConvert.DeserializeObject<TokenInfos>(JsonConvert.SerializeObject(infos))!;
+              result[i] = ConvertUtils.CloneConverted<TokenInfos>(infos);
             }
           }
 
@@ -122,8 +121,8 @@ namespace nGroup.Sign.Pkcs11.Server
       string credential,
       string certificateThumbprint,
       byte[] hash,
-      string hashAlgorithmName,
-      RSASignaturePaddingMode signaturePaddingMode)
+      HashAlgorithmName hashAlgorithmName,
+      RSASignaturePadding signaturePadding)
     {
       return retry.Execute(() =>
       {
@@ -132,9 +131,7 @@ namespace nGroup.Sign.Pkcs11.Server
           var pkcs11Certificate = pkcs11CertificateContext.Instance.Pkcs11X509Certificate;
           using (var rsa = pkcs11Certificate.GetRSAPrivateKey())
           {
-            var hashAlgorithm = GetHashAlgorithmName(hashAlgorithmName);
-            var signaturePadding = GetRSASignaturePadding(signaturePaddingMode);
-            var result = rsa.SignHash(hash, hashAlgorithm, signaturePadding);
+            var result = rsa.SignHash(hash, hashAlgorithmName, signaturePadding);
             return result;
           }
         }
@@ -146,8 +143,8 @@ namespace nGroup.Sign.Pkcs11.Server
      string certificateThumbprint,
      byte[] hash,
      byte[] signature,
-     string hashAlgorithmName,
-     RSASignaturePaddingMode signaturePaddingMode)
+     HashAlgorithmName hashAlgorithmName,
+     RSASignaturePadding signaturePadding)
     {
       return retry.Execute(() =>
       {
@@ -156,9 +153,7 @@ namespace nGroup.Sign.Pkcs11.Server
           var pkcs11Certificate = pkcs11CertificateContext.Instance.Pkcs11X509Certificate;
           using (var rsa = pkcs11Certificate.GetRSAPrivateKey())
           {
-            var hashAlgorithm = GetHashAlgorithmName(hashAlgorithmName);
-            var signaturePadding = GetRSASignaturePadding(signaturePaddingMode);
-            var result = rsa.VerifyHash(hash, signature, hashAlgorithm, signaturePadding);
+            var result = rsa.VerifyHash(hash, signature, hashAlgorithmName, signaturePadding);
             return result;
           }
         }
@@ -283,16 +278,6 @@ namespace nGroup.Sign.Pkcs11.Server
       return pkcs11Certificate;
     }
 
-    private static HashAlgorithmName GetHashAlgorithmName(string hashAlgorithmName) => hashAlgorithmName switch
-    {
-      nameof(HashAlgorithmName.MD5) => HashAlgorithmName.MD5,
-      nameof(HashAlgorithmName.SHA1) => HashAlgorithmName.SHA1,
-      nameof(HashAlgorithmName.SHA256) => HashAlgorithmName.SHA256,
-      nameof(HashAlgorithmName.SHA384) => HashAlgorithmName.SHA384,
-      nameof(HashAlgorithmName.SHA512) => HashAlgorithmName.SHA512,
-      _ => throw new ArgumentException($"Invalid HashAlgorithmName {hashAlgorithmName}", nameof(hashAlgorithmName))
-    };
-
     private static Pkcs11TokenAccessOptions GetOptions()
     {
       return options;
@@ -316,7 +301,7 @@ namespace nGroup.Sign.Pkcs11.Server
           }
         }
 
-        throw new CertificateNotFoundException($"Invalid Certificate Thumbprint {certificateThumbprint}");
+        throw new CertificateNotFoundException($"Invalid Certificate Thumbprint: {certificateThumbprint}");
       }
       finally
       {
@@ -339,13 +324,6 @@ namespace nGroup.Sign.Pkcs11.Server
       return validPaths;
     }
 
-    private static RSASignaturePadding GetRSASignaturePadding(RSASignaturePaddingMode signaturePaddingMode) => signaturePaddingMode switch
-    {
-      RSASignaturePaddingMode.Pkcs1 => RSASignaturePadding.Pkcs1,
-      RSASignaturePaddingMode.Pss => RSASignaturePadding.Pss,
-      _ => throw new ArgumentException($"Invalid RSASignaturePadding {signaturePaddingMode}", nameof(signaturePaddingMode))
-    };
-
     private static Dictionary<string, byte[]> GetTokenIdsAndTokenPins(Pkcs11TokenAccessOptions options)
     {
       var tokenIdsAndTokenPins = options.TokenIdsAndTokenPins;
@@ -361,7 +339,7 @@ namespace nGroup.Sign.Pkcs11.Server
       {
         if (throwException)
         {
-          throw new ArgumentException($"Invalid Credentials {credential}", nameof(credential));
+          throw new ArgumentException($"Invalid Credentials: {credential}", nameof(credential));
         }
         else
         {
@@ -389,7 +367,7 @@ namespace nGroup.Sign.Pkcs11.Server
       {
         if (throwException)
         {
-          throw new ArgumentException($"Invalid Credentials {credential}", nameof(credential));
+          throw new ArgumentException($"Invalid Credentials: {credential}", nameof(credential));
         }
       }
 

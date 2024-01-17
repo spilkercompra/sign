@@ -4,13 +4,12 @@
 
 namespace nGroup.Sign.Pkcs11.Client
 {
+  using nGroup.Sign.Pkcs11.Server;
   using nGroup.Sign.Pkcs11.WebApi;
   using System;
   using System.Net;
-  using System.Security.Cryptography;
-  using System.Security.Cryptography.X509Certificates;
 
-  internal class Pkcs11TokenRemoteClient : Pkcs11TokenClientBase
+  internal class Pkcs11TokenRemoteClient<T> : Pkcs11TokenClientBase where T : IPkcs11TokenAccessApi, IWebApiClient<T>
   {
     #region Constructors
 
@@ -18,48 +17,26 @@ namespace nGroup.Sign.Pkcs11.Client
     {
       var handler = new SocketsHttpHandler
       {
-        PooledConnectionLifetime = TimeSpan.FromMinutes(15), // Recreate every 15 minutes
+        PooledConnectionLifetime = Timeout.InfiniteTimeSpan,
         Credentials = CredentialCache.DefaultNetworkCredentials
       };
-      SharedClient = new HttpClient(handler);
+      SharedHttpClient = new HttpClient(handler);
     }
 
     #endregion Constructors
 
     #region Properties
 
-    public WebApiClient? WebApiClient { get; private set; }
-    private static HttpClient SharedClient { get; }
+    private static HttpClient SharedHttpClient { get; }
 
     #endregion Properties
 
     #region Methods
 
-    public override async Task<X509Certificate2> GetCertificateAsync()
-    {
-      EnsureInitialized(this);
-      var certificate = await this.WebApiClient!.GetCertificateAsync(this.Credential, this.CertificateName);
-      return new X509Certificate2(certificate);
-    }
-
     public override void Initialize(Uri keyVaultUrl, string credential, string certificateName)
     {
       base.Initialize(keyVaultUrl, credential, certificateName);
-      this.WebApiClient = new WebApiClient(keyVaultUrl.ToString(), SharedClient);
-    }
-
-    internal override async Task<byte[]> SignHashAsync(byte[] hash, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
-    {
-      EnsureInitialized(this);
-      var signature = await this.WebApiClient!.RsaSignHashAsync(this.Credential, this.CertificateName, hash, hashAlgorithm.Name, (WebApi.RSASignaturePaddingMode)padding.Mode);
-      return signature;
-    }
-
-    internal override async Task<bool> VerifyHashAsync(byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
-    {
-      EnsureInitialized(this);
-      var result = await this.WebApiClient!.RsaVerifyHashAsync(this.Credential, this.CertificateName, hash, signature, hashAlgorithm.Name, (WebApi.RSASignaturePaddingMode)padding.Mode);
-      return result;
+      this.TokenAccessApi = T.Create(keyVaultUrl.ToString(), SharedHttpClient);
     }
 
     #endregion Methods

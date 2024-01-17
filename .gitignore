@@ -262,3 +262,4 @@ ModelManifest.xml
 /src/SignService/Properties/PublishProfiles
 /src/InstallUtility/Properties/launchSettings.json
 /arm/ArmDeploy/azuredeploy.parameters.json
+/src/nGroup.Sign/nGroup.Sign.Pkcs11/nGroup.Sign.Pkcs11.appsettings.Production.json

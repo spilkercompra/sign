@@ -4,7 +4,8 @@
 
 namespace nGroup.Sign.Pkcs11.WebApi
 {
-  public partial class WebApiClient
+  internal interface IWebApiClient<T>
   {
+    static abstract T Create(string baseUrl, HttpClient httpClient);
   }
 }

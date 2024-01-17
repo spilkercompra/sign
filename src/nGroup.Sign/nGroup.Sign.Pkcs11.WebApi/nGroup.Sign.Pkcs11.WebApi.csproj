@@ -14,17 +14,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="NSwag.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\nGroup.Sign.Pkcs11\nGroup.Sign.Pkcs11.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="nGroup.Sign.Pkcs11.WebApi.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

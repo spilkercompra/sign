@@ -4,42 +4,43 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Azure.Identity" Version="1.10.3" />
+    <PackageVersion Include="Azure.Identity" Version="1.10.4" />
     <PackageVersion Include="Azure.Security.KeyVault.Certificates" Version="4.5.1" />
     <PackageVersion Include="AzureSign.Core" Version="4.0.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <!-- Lift this dependency to enable Sign.Core.Test override the version. -->
-    <PackageVersion Include="Microsoft.Extensions.Primitives" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Primitives" Version="8.0.0" />
     <!-- Only use release versions.  Pre-release versions are signed with an untrusted certificate. -->
-    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
-    <PackageVersion Include="Moq" Version="4.18.4" />
+    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.2428" />
+    <PackageVersion Include="Moq" Version="4.20.70" />
     <!-- Lift this dependency from NuGetKeyVaultSignTool.Core to get the latest version. -->
-    <PackageVersion Include="NuGet.Packaging" Version="6.7.0" />
+    <PackageVersion Include="NuGet.Packaging" Version="6.8.0" />
     <!-- Lift this dependency from NuGetKeyVaultSignTool.Core to get the latest version. -->
-    <PackageVersion Include="NuGet.Protocol" Version="6.7.0" />
+    <PackageVersion Include="NuGet.Protocol" Version="6.8.0" />
     <PackageVersion Include="NuGetKeyVaultSignTool.Core" Version="3.2.3" />
     <PackageVersion Include="OpenVsixSignTool.Core" Version="0.4.0" />
     <PackageVersion Include="RSAKeyVaultProvider" Version="2.1.1" />
     <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="7.0.3" />
-    <PackageVersion Include="System.Security.Cryptography.Xml" Version="7.0.1" />
-    <PackageVersion Include="System.Text.Json" Version="7.0.3" />
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
+    <PackageVersion Include="System.Security.Cryptography.Xml" Version="8.0.0" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.1" />
   </ItemGroup>
   <!-- nGroup.Sign -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.SourceLink.AzureDevOpsServer.Git" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageVersion Include="NSwag.ApiDescription.Client" Version="13.18.2" />
+    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="NSwag.AspNetCore" Version="14.0.2" />
+    <PackageVersion Include="NSwag.ApiDescription.Client" Version="14.0.2" />
     <PackageVersion Include="Pkcs11Interop" Version="5.1.2" />
     <PackageVersion Include="Pkcs11Interop.X509Store" Version="0.4.0" />
     <PackageVersion Include="Polly.Core" Version="8.2.1" />
