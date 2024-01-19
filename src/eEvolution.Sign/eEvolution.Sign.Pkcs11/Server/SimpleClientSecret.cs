@@ -16,36 +16,6 @@ namespace eEvolution.Sign.Pkcs11.Server
   {
     #region Methods
 
-    public static void Main()
-    {
-      var id = "spilker";
-      var clientId = "eEvolution.Sign";
-      var tokenId = "80fc0e2ce554516b";
-      var tokenPin = "abcd";
-      var secret = "secret";
-      var salt = "salt";
-
-      ComputeClientSecret(id, clientId, tokenId, tokenPin, secret, salt); //.Dump(id);
-
-      id = "spilker";
-      clientId = "eEvolution.Sign";
-      tokenId = "351DB0446DDB65EF";
-      tokenPin = "XXXX";
-      secret = "secret";
-      salt = "salt";
-
-      ComputeClientSecret(id, clientId, tokenId, tokenPin, secret, salt); //.Dump(id);
-
-      id = "skriptuser";
-      clientId = "eEvolution.Sign";
-      tokenId = "351DB0446DDB65EF";
-      tokenPin = "XXXX";
-      secret = "secret";
-      salt = "salt";
-
-      ComputeClientSecret(id, clientId, tokenId, tokenPin, secret, salt); //.Dump(id);
-    }
-
     internal static string ComputeClientSecret(
       string id,
       string clientId,
