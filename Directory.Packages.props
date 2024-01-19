@@ -31,7 +31,7 @@
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="8.0.0" />
     <PackageVersion Include="System.Text.Json" Version="8.0.1" />
   </ItemGroup>
-  <!-- nGroup.Sign -->
+  <!-- eEvolution.Sign -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.SourceLink.AzureDevOpsServer.Git" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.1" />

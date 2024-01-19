@@ -30,11 +30,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sign.Cli", "src\Sign.CLI\Si
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sign.Cli.Test", "test\Sign.Cli.Test\Sign.Cli.Test.csproj", "{3C6FC0EB-F5B9-430C-B420-4DEC6B390768}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nGroup.Sign.Pkcs11", "src\nGroup.Sign\nGroup.Sign.Pkcs11\nGroup.Sign.Pkcs11.csproj", "{B8D4D5A2-0673-4ADA-875B-AD3CA7363FA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eEvolution.Sign.Pkcs11", "src\eEvolution.Sign\eEvolution.Sign.Pkcs11\eEvolution.Sign.Pkcs11.csproj", "{B8D4D5A2-0673-4ADA-875B-AD3CA7363FA3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nGroup.Sign.Pkcs11.WebApi", "src\nGroup.Sign\nGroup.Sign.Pkcs11.WebApi\nGroup.Sign.Pkcs11.WebApi.csproj", "{F8CCB20C-72B8-434B-8408-D8B834657EFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eEvolution.Sign.Pkcs11.WebApi", "src\eEvolution.Sign\eEvolution.Sign.Pkcs11.WebApi\eEvolution.Sign.Pkcs11.WebApi.csproj", "{F8CCB20C-72B8-434B-8408-D8B834657EFF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nGroup.Sign.Cli", "src\nGroup.Sign\nGroup.Sign.Cli\nGroup.Sign.Cli.csproj", "{D232464A-8DCA-4F42-A482-E867A4616842}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eEvolution.Sign.Cli", "src\eEvolution.Sign\eEvolution.Sign.Cli\eEvolution.Sign.Cli.csproj", "{D232464A-8DCA-4F42-A482-E867A4616842}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
