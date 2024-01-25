@@ -423,6 +423,12 @@
             "items": {
               "$ref": "#/components/schemas/TokenInfo"
             }
+          },
+          "certificates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CertificateInfo"
+            }
           }
         }
       },
@@ -657,6 +663,52 @@
           },
           "soPinToBeChanged": {
             "type": "boolean"
+          }
+        }
+      },
+      "CertificateInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "thumbprint": {
+            "type": "string",
+            "nullable": true
+          },
+          "subject": {
+            "type": "string",
+            "nullable": true
+          },
+          "issuer": {
+            "type": "string",
+            "nullable": true
+          },
+          "notBefore": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notAfter": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "humanReadableData": {
+            "type": "string",
+            "nullable": true
+          },
+          "pem": {
+            "type": "string",
+            "nullable": true
+          },
+          "tokenSerialNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "tokenCertificateId": {
+            "type": "string",
+            "nullable": true
+          },
+          "tokenCertificateLabel": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

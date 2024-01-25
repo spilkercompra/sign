@@ -10,7 +10,7 @@ namespace eEvolution.Sign.Pkcs11.WebApi
   using System.Security.Cryptography;
   using System.Threading.Tasks;
 
-  public partial class KeysClient : IPkcs11TokenAccessApi, IWebApiClient<KeysClient>
+  public partial class KeysClient : IEEvoPkcs11TokenAccessApi, IWebApiClient<KeysClient>
   {
     #region Methods
 
@@ -19,7 +19,7 @@ namespace eEvolution.Sign.Pkcs11.WebApi
       return new KeysClient(baseUrl, httpClient);
     }
 
-    async Task<byte[]> IPkcs11TokenAccessApi.GetCertificateAsync(string credential, string certificateName)
+    async Task<byte[]> IEEvoPkcs11TokenAccessApi.GetCertificateAsync(string credential, string certificateName)
     {
       try
       {
@@ -33,7 +33,7 @@ namespace eEvolution.Sign.Pkcs11.WebApi
       }
     }
 
-    async Task<Server.TokenInfos[]> IPkcs11TokenAccessApi.GetTokenInfosAsync()
+    async Task<Server.TokenInfos[]> IEEvoPkcs11TokenAccessApi.GetTokenInfosAsync()
     {
       try
       {
@@ -47,7 +47,7 @@ namespace eEvolution.Sign.Pkcs11.WebApi
       }
     }
 
-    async Task<byte[]> IPkcs11TokenAccessApi.RsaSignHashAsync(string credential, string certificateName, byte[] hash, HashAlgorithmName hashAlgorithmName, RSASignaturePadding signaturePadding)
+    async Task<byte[]> IEEvoPkcs11TokenAccessApi.RsaSignHashAsync(string credential, string certificateName, byte[] hash, HashAlgorithmName hashAlgorithmName, RSASignaturePadding signaturePadding)
     {
       try
       {
@@ -69,7 +69,7 @@ namespace eEvolution.Sign.Pkcs11.WebApi
       }
     }
 
-    async Task<bool> IPkcs11TokenAccessApi.RsaVerifyHashAsync(string credential, string certificateName, byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithmName, RSASignaturePadding signaturePadding)
+    async Task<bool> IEEvoPkcs11TokenAccessApi.RsaVerifyHashAsync(string credential, string certificateName, byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithmName, RSASignaturePadding signaturePadding)
     {
       try
       {

@@ -10,25 +10,25 @@ namespace eEvolution.Sign.Pkcs11
   using System.Security.Cryptography;
   using System.Security.Cryptography.X509Certificates;
 
-  public class Pkcs11KeyVaultService
+  public class EEvoPkcs11KeyVaultService
   {
     #region Fields
 
-    private readonly Pkcs11TokenClientBase pkcs11TokenClient;
+    private readonly EEvoPkcs11TokenClientBase pkcs11TokenClient;
 
     #endregion Fields
 
     #region Constructors
 
-    public Pkcs11KeyVaultService(bool useLocalClient)
+    public EEvoPkcs11KeyVaultService(bool useLocalClient)
     {
       if (useLocalClient)
       {
-        this.pkcs11TokenClient = new Pkcs11TokenLocalClient();
+        this.pkcs11TokenClient = new EEvoPkcs11TokenLocalClient();
       }
       else
       {
-        this.pkcs11TokenClient = new Pkcs11TokenRemoteClient<KeysClient>();
+        this.pkcs11TokenClient = new EEvoPkcs11TokenRemoteClient<KeysClient>();
       }
     }
 

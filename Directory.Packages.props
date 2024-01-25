@@ -33,6 +33,9 @@
   </ItemGroup>
   <!-- eEvolution.Sign -->
   <ItemGroup>
+    <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.7.0" />
+    <PackageVersion Include="IKVM" Version="8.7.4" />
+    <PackageVersion Include="IKVM.Maven.Sdk" Version="1.6.7" />
     <PackageVersion Include="Microsoft.SourceLink.AzureDevOpsServer.Git" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />

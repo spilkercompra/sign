@@ -16,19 +16,19 @@ namespace eEvolution.Sign.Pkcs11.Server
   using System.Security.Cryptography.X509Certificates;
   using ConvertUtils = eEvolution.Sign.Pkcs11.ConvertUtils;
 
-  internal static partial class Pkcs11TokenAccess
+  internal static partial class EEvoPkcs11TokenAccess
   {
     #region Fields
 
     private static readonly Pkcs11TokenAccessCache cache;
-    private static readonly Pkcs11TokenAccessOptions options;
+    private static readonly EEvoPkcs11TokenAccessOptions options;
     private static readonly ResiliencePipeline retry;
 
     #endregion Fields
 
     #region Constructors
 
-    static Pkcs11TokenAccess()
+    static EEvoPkcs11TokenAccess()
     {
       options = LoadOptions();
       cache = new Pkcs11TokenAccessCache();
@@ -55,17 +55,47 @@ namespace eEvolution.Sign.Pkcs11.Server
 
     #region Methods
 
-    public static byte[] GetCertificate(string credential, string certificateThumbprint)
+    public static byte[] GetCertificate(string credential, string certificateThumbprint, bool privateKeyOnTokenRequired = false)
     {
       return retry.Execute(() =>
       {
-        using (var pkcs11CertificateContext = CreatePkcs11CertificateContext(credential, certificateThumbprint))
+        var certificate = default(X509Certificate2);
+
+        if (privateKeyOnTokenRequired)
         {
-          var pkcs11Certificate = pkcs11CertificateContext.Instance.Pkcs11X509Certificate;
-          var cert = pkcs11Certificate.Info.ParsedCertificate;
-          var result = cert.Export(X509ContentType.Cert);
-          return result;
+          using (var pkcs11CertificateContext = CreatePkcs11CertificateContext(credential, certificateThumbprint))
+          {
+            var pkcs11Certificate = pkcs11CertificateContext.Instance.Pkcs11X509Certificate;
+            certificate = pkcs11Certificate.Info.ParsedCertificate;
+          }
         }
+        else
+        {
+          lock (cache)
+          {
+            if (!cache.X509Certificates.TryGetValue(certificateThumbprint, out certificate))
+            {
+              var tokenInfos = GetTokenInfosInternal();
+              certificate = tokenInfos
+                            .SelectMany(ti => ti.Certificates)
+                            .Where(certInfo => string.Equals(certificateThumbprint, certInfo.Thumbprint, StringComparison.OrdinalIgnoreCase))
+                            .Select(certInfo => X509Certificate2.CreateFromPem(certInfo.Pem))
+                            .FirstOrDefault();
+              if (certificate != null)
+              {
+                cache.X509Certificates[certificateThumbprint] = certificate;
+              }
+            }
+
+            if (certificate == null)
+            {
+              throw new CertificateNotFoundException($"Invalid Certificate Thumbprint: {certificateThumbprint}");
+            }
+          }
+        }
+
+        var result = certificate.Export(X509ContentType.Cert);
+        return result;
       });
     }
 
@@ -73,47 +103,7 @@ namespace eEvolution.Sign.Pkcs11.Server
     {
       return retry.Execute(() =>
       {
-        var storeContexts = CreateStoreContexts();
-        try
-        {
-          var count = storeContexts.Length;
-          var result = new TokenInfos[count];
-
-          for (int i = 0; i < count; i++)
-          {
-            using (var storeContext = storeContexts[i])
-            using (storeContext.Instance.PinProvider.UseCancelEnterPin())
-            {
-              var pkcs11Library = storeContext.Instance.IPkcs11Library;
-
-              var libraryInfo = pkcs11Library.GetInfo();
-              var infos = new { Library = libraryInfo, Slots = new List<ISlotInfo>(), Tokens = new List<ITokenInfo>() };
-
-              foreach (var slot in pkcs11Library.GetSlotList(SlotsType.WithTokenPresent))
-              {
-                var slotInfo = slot.GetSlotInfo();
-                infos.Slots.Add(slotInfo);
-
-                if (slotInfo.SlotFlags.TokenPresent)
-                {
-                  var tokenInfo = slot.GetTokenInfo();
-                  infos.Tokens.Add(tokenInfo);
-                }
-              }
-
-              result[i] = ConvertUtils.CloneConverted<TokenInfos>(infos);
-            }
-          }
-
-          return result;
-        }
-        finally
-        {
-          foreach (var storeContext in storeContexts)
-          {
-            storeContext.Dispose();
-          }
-        }
+        return GetTokenInfosInternal();
       });
     }
 
@@ -189,7 +179,7 @@ namespace eEvolution.Sign.Pkcs11.Server
           ValidateCredentials(credential);
           var validateCredentialsPredicate = createValidateCredentialsPredicate(credential);
 
-          certificateReference = GetPkcs11Certificate(certificateThumbprint, privateKeyRequired: true, predicate: validateCredentialsPredicate);
+          certificateReference = GetPkcs11Certificate(certificateThumbprint, predicate: validateCredentialsPredicate);
           cache.Certificates[request] = certificateReference;
         }
       }
@@ -248,7 +238,6 @@ namespace eEvolution.Sign.Pkcs11.Server
     private static Pkcs11X509Certificate? FindPkcs11Certificate(
       StoreReference storeReference,
       string certificateThumbprint,
-      bool privateKeyRequired,
       Func<Pkcs11X509StoreInfo, Pkcs11SlotInfo, Pkcs11TokenInfo, Pkcs11X509CertificateInfo, bool> predicate)
     {
       var pinProvider = storeReference.PinProvider;
@@ -258,7 +247,7 @@ namespace eEvolution.Sign.Pkcs11.Server
       var certificates = store
                           .Slots
                           .Where(slot => slot.Token != null)
-                          .Where(slot => !privateKeyRequired || tokenIdsAndTokenPins.ContainsKey(slot.Token.Info.SerialNumber))
+                          .Where(slot => tokenIdsAndTokenPins.ContainsKey(slot.Token.Info.SerialNumber))
                           .SelectMany(slot => slot.Token.Certificates.Select(certificate =>
                             new
                             {
@@ -278,12 +267,12 @@ namespace eEvolution.Sign.Pkcs11.Server
       return pkcs11Certificate;
     }
 
-    private static Pkcs11TokenAccessOptions GetOptions()
+    private static EEvoPkcs11TokenAccessOptions GetOptions()
     {
       return options;
     }
 
-    private static CertificateReference GetPkcs11Certificate(string certificateThumbprint, bool privateKeyRequired, Func<Pkcs11X509StoreInfo, Pkcs11SlotInfo, Pkcs11TokenInfo, Pkcs11X509CertificateInfo, bool> predicate)
+    private static CertificateReference GetPkcs11Certificate(string certificateThumbprint, Func<Pkcs11X509StoreInfo, Pkcs11SlotInfo, Pkcs11TokenInfo, Pkcs11X509CertificateInfo, bool> predicate)
     {
       var storeContexts = CreateStoreContexts();
       try
@@ -291,10 +280,9 @@ namespace eEvolution.Sign.Pkcs11.Server
         foreach (var storeContext in storeContexts)
         {
           var storeReference = storeContext.Instance;
-          var pkcs11Certificate = FindPkcs11Certificate(storeReference, certificateThumbprint, privateKeyRequired, predicate);
+          var pkcs11Certificate = FindPkcs11Certificate(storeReference, certificateThumbprint, predicate);
 
-          var isValidCertificate = pkcs11Certificate != null
-                                   && (!privateKeyRequired || pkcs11Certificate.HasPrivateKeyObject);
+          var isValidCertificate = pkcs11Certificate != null;
           if (isValidCertificate)
           {
             return new CertificateReference(pkcs11Certificate!, new Context<StoreReference>(storeContext.Instance));
@@ -312,7 +300,7 @@ namespace eEvolution.Sign.Pkcs11.Server
       }
     }
 
-    private static List<string> GetPkcs11LibraryPaths(Pkcs11TokenAccessOptions options)
+    private static List<string> GetPkcs11LibraryPaths(EEvoPkcs11TokenAccessOptions options)
     {
       var validPaths = options.Pkcs11LibraryPaths.Where(path => File.Exists(path)).ToList();
 
@@ -324,10 +312,58 @@ namespace eEvolution.Sign.Pkcs11.Server
       return validPaths;
     }
 
-    private static Dictionary<string, byte[]> GetTokenIdsAndTokenPins(Pkcs11TokenAccessOptions options)
+    private static Dictionary<string, byte[]> GetTokenIdsAndTokenPins(EEvoPkcs11TokenAccessOptions options)
     {
       var tokenIdsAndTokenPins = options.TokenIdsAndTokenPins;
       return tokenIdsAndTokenPins.ToDictionary(tokenAndPin => tokenAndPin.Key, tokenAndPin => ConvertUtils.Utf8StringToBytes(tokenAndPin.Value));
+    }
+
+    private static TokenInfos[] GetTokenInfosInternal()
+    {
+      var storeContexts = CreateStoreContexts();
+      try
+      {
+        var count = storeContexts.Length;
+        var result = new TokenInfos[count];
+
+        for (int i = 0; i < count; i++)
+        {
+          using (var storeContext = storeContexts[i])
+          using (storeContext.Instance.PinProvider.UseCancelEnterPin())
+          {
+            var pkcs11Library = storeContext.Instance.IPkcs11Library;
+
+            var libraryInfo = pkcs11Library.GetInfo();
+            var infos = new { Library = libraryInfo, Slots = new List<ISlotInfo>(), Tokens = new List<ITokenInfo>(), Certificates = new List<CertificateInfo>() };
+
+            foreach (var slot in pkcs11Library.GetSlotList(SlotsType.WithTokenPresent))
+            {
+              var slotInfo = slot.GetSlotInfo();
+              infos.Slots.Add(slotInfo);
+
+              if (slotInfo.SlotFlags.TokenPresent)
+              {
+                var tokenInfo = slot.GetTokenInfo();
+                infos.Tokens.Add(tokenInfo);
+
+                var certificateInfos = slot.GetCertificateInfosWithoutPinLogin();
+                infos.Certificates.AddRange(certificateInfos);
+              }
+            }
+
+            result[i] = ConvertUtils.CloneConverted<TokenInfos>(infos);
+          }
+        }
+
+        return result;
+      }
+      finally
+      {
+        foreach (var storeContext in storeContexts)
+        {
+          storeContext.Dispose();
+        }
+      }
     }
 
     private static Dictionary<string, byte[]> GetValidTokenIdsAndTokenPinsForCredential(string credential, bool throwException)
@@ -374,9 +410,9 @@ namespace eEvolution.Sign.Pkcs11.Server
       return validTokenIdsAndTokenPinsForCredential;
     }
 
-    private static Pkcs11TokenAccessOptions LoadOptions()
+    private static EEvoPkcs11TokenAccessOptions LoadOptions()
     {
-      var options = Pkcs11TokenAccessOptions.GetInstance();
+      var options = EEvoPkcs11TokenAccessOptions.GetInstance();
 
       foreach (var entry in options.EnvironmentVariables)
       {
@@ -411,6 +447,7 @@ namespace eEvolution.Sign.Pkcs11.Server
 
         cache.Certificates.Clear();
         cache.Stores.Clear();
+        cache.X509Certificates.Clear();
 
         foreach (var cert in certificates)
         {

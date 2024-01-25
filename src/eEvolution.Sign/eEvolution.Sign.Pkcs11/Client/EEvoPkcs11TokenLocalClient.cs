@@ -7,14 +7,14 @@ namespace eEvolution.Sign.Pkcs11.Client
   using eEvolution.Sign.Pkcs11.Server;
   using System;
 
-  internal class Pkcs11TokenLocalClient : Pkcs11TokenClientBase
+  internal class EEvoPkcs11TokenLocalClient : EEvoPkcs11TokenClientBase
   {
     #region Methods
 
     public override void Initialize(Uri keyVaultUrl, string credential, string certificateName)
     {
       base.Initialize(keyVaultUrl, credential, certificateName);
-      this.TokenAccessApi = new Pkcs11TokenAccessApi();
+      this.TokenAccessApi = new EEvoPkcs11TokenAccessApi();
     }
 
     #endregion Methods

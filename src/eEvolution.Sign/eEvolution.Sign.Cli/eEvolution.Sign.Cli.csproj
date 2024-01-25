@@ -13,9 +13,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\eEvolution.Sign.JSign\eEvolution.Sign.JSign.csproj" />
     <ProjectReference Include="..\eEvolution.Sign.Pkcs11\eEvolution.Sign.Pkcs11.csproj" />
-    <ProjectReference Include="..\..\Sign.Core\Sign.Core.csproj" />
     <ProjectReference Include="..\..\Sign.Cli\Sign.Cli.csproj" />
+    <ProjectReference Include="..\..\Sign.Core\Sign.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IgnoresAccessChecksToGenerator">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <InternalsAssemblyName Include="sign" />
+    <InternalsAssemblyName Include="Sign.Core" />
+  </ItemGroup>
+  <PropertyGroup>
+    <CompileUsingReferenceAssemblies>false</CompileUsingReferenceAssemblies>
+  </PropertyGroup>
   
 </Project>

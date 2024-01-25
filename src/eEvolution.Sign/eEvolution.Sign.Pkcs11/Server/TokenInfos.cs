@@ -7,9 +7,11 @@ namespace eEvolution.Sign.Pkcs11.Server
   using System;
 
   public record TokenInfos(
-    LibraryInfo Library, 
-    List<SlotInfo> Slots, 
-    List<TokenInfo> Tokens);
+    LibraryInfo Library,
+    List<SlotInfo> Slots,
+    List<TokenInfo> Tokens,
+    List<CertificateInfo> Certificates
+    );
 
   public record LibraryInfo
   {
@@ -132,5 +134,19 @@ namespace eEvolution.Sign.Pkcs11.Server
     public bool SoPinLocked { get; init; }
 
     public bool SoPinToBeChanged { get; init; }
+  }
+
+  public record CertificateInfo
+  {
+    public string? Thumbprint { get; init; }
+    public string? Subject { get; init; }
+    public string? Issuer { get; init; }
+    public DateTime NotBefore { get; init; }
+    public DateTime NotAfter { get; init; }
+    public string? HumanReadableData { get; init; }
+    public string? Pem { get; init; }
+    public string? TokenSerialNumber { get; init; }
+    public string? TokenCertificateId { get; init; }
+    public string? TokenCertificateLabel { get; init; }
   }
 }

@@ -16,13 +16,13 @@ namespace eEvolution.Sign.Pkcs11.WebApi.Controllers.RemoteSign
     #region Fields
 
     private readonly ILogger<RemoteSignController> logger;
-    private readonly IPkcs11TokenAccessApi pkcs11TokenAccessApi;
+    private readonly IEEvoPkcs11TokenAccessApi pkcs11TokenAccessApi;
 
     #endregion Fields
 
     #region Constructors
 
-    public RemoteSignController(IPkcs11TokenAccessApi pkcs11TokenAccessApi, ILogger<RemoteSignController> logger)
+    public RemoteSignController(IEEvoPkcs11TokenAccessApi pkcs11TokenAccessApi, ILogger<RemoteSignController> logger)
     {
       this.pkcs11TokenAccessApi = pkcs11TokenAccessApi;
       this.logger = logger;

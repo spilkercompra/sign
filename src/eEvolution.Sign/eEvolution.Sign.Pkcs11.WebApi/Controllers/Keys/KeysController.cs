@@ -18,13 +18,13 @@ namespace eEvolution.Sign.Pkcs11.WebApi.Controllers.Keys
     #region Fields
 
     private readonly ILogger<KeysController> logger;
-    private readonly IPkcs11TokenAccessApi pkcs11TokenAccessApi;
+    private readonly IEEvoPkcs11TokenAccessApi pkcs11TokenAccessApi;
 
     #endregion Fields
 
     #region Constructors
 
-    public KeysController(IPkcs11TokenAccessApi pkcs11TokenAccessApi, ILogger<KeysController> logger)
+    public KeysController(IEEvoPkcs11TokenAccessApi pkcs11TokenAccessApi, ILogger<KeysController> logger)
     {
       this.pkcs11TokenAccessApi = pkcs11TokenAccessApi;
       this.logger = logger;

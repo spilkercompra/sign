@@ -6,7 +6,7 @@ namespace eEvolution.Sign.Pkcs11.Server
 {
   using System.Security.Cryptography;
 
-  public interface IPkcs11TokenAccessApi
+  public interface IEEvoPkcs11TokenAccessApi
   {
     #region Methods
 

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RuntimeIdentifier></RuntimeIdentifier>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  
+  
+  <ItemGroup>
+    <PackageReference Include="IKVM" />
+    <PackageReference Include="IKVM.Maven.Sdk" />
+    <MavenReference Include="net.jsign:jsign-core" Version="6.0" />
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <PackageReference Include="IgnoresAccessChecksToGenerator">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <InternalsAssemblyName Include="jsign.core" />
+  </ItemGroup>
+  <PropertyGroup>
+    <CompileUsingReferenceAssemblies>false</CompileUsingReferenceAssemblies>
+  </PropertyGroup>
+
+</Project>

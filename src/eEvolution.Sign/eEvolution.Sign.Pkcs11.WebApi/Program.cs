@@ -16,7 +16,7 @@ namespace eEvolution.Sign.Pkcs11.WebApi
       // Add services to the container.
       builder.Services.AddControllers();
       builder.Services.AddOpenApiDocument();
-      builder.Services.AddSingleton<IPkcs11TokenAccessApi, Pkcs11TokenAccessApi>();
+      builder.Services.AddSingleton<IEEvoPkcs11TokenAccessApi, EEvoPkcs11TokenAccessApi>();
 
       var app = builder.Build();
 

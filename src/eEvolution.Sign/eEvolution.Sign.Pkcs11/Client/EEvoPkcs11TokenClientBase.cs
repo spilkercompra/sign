@@ -9,20 +9,20 @@ namespace eEvolution.Sign.Pkcs11.Client
   using System.Security.Cryptography;
   using System.Security.Cryptography.X509Certificates;
 
-  internal abstract class Pkcs11TokenClientBase
+  internal abstract class EEvoPkcs11TokenClientBase
   {
     #region Properties
 
     public string? CertificateName { get; protected set; }
     public string? Credential { get; protected set; }
     public Uri? KeyVaultUrl { get; protected set; }
-    public IPkcs11TokenAccessApi? TokenAccessApi { get; protected set; }
+    public IEEvoPkcs11TokenAccessApi? TokenAccessApi { get; protected set; }
 
     #endregion Properties
 
     #region Methods
 
-    public static void EnsureInitialized(Pkcs11TokenClientBase pkcs11TokenClientBase)
+    public static void EnsureInitialized(EEvoPkcs11TokenClientBase pkcs11TokenClientBase)
     {
       if (pkcs11TokenClientBase == null)
       {

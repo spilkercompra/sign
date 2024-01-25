@@ -9,11 +9,11 @@ namespace eEvolution.Sign.Pkcs11.Client
   using System;
   using System.Net;
 
-  internal class Pkcs11TokenRemoteClient<T> : Pkcs11TokenClientBase where T : IPkcs11TokenAccessApi, IWebApiClient<T>
+  internal class EEvoPkcs11TokenRemoteClient<T> : EEvoPkcs11TokenClientBase where T : IEEvoPkcs11TokenAccessApi, IWebApiClient<T>
   {
     #region Constructors
 
-    static Pkcs11TokenRemoteClient()
+    static EEvoPkcs11TokenRemoteClient()
     {
       var handler = new SocketsHttpHandler
       {

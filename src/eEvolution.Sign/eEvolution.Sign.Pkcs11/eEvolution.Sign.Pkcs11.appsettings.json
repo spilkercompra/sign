@@ -1,5 +1,5 @@
 ﻿{
-  "Pkcs11TokenAccessOptions": {
+  "EEvoPkcs11TokenAccessOptions": {
     "Pkcs11LibraryPaths": [
       "c:\\SoftHSM2\\lib\\softhsm2-x64.dll",
       "c:\\Windows\\System32\\eTPKCS11.dll"

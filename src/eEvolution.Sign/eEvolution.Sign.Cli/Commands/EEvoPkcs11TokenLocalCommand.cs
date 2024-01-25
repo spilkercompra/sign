@@ -1,13 +1,16 @@
-namespace eEvolution.Sign.Cli
+namespace eEvolution.Sign.Cli.Commands
 {
   using System.CommandLine;
-  using System.CommandLine.Invocation;
   using global::Sign.Core;
   using global::Sign.Cli;
   using System;
   using Microsoft.Extensions.DependencyInjection;
+  using eEvolution.Sign.Cli.Tools;
+  using eEvolution.Sign.Cli.SignatureProviders;
+  using eEvolution.Sign.Cli.KeyVault;
+  using Microsoft.Extensions.DependencyInjection.Extensions;
 
-  internal sealed class Pkcs11TokenRemoteCommand : Command
+  internal sealed class EEvoPkcs11TokenLocalCommand : Command
   {
     #region Fields
 
@@ -16,7 +19,7 @@ namespace eEvolution.Sign.Cli
 
     #endregion Fields
 
-    // ".\eEvolution.Sign.exe" code pkcs11-token-remote *.dll -kvc 9505299957EED70137B0CD033DDB3F2AA027A6DB -d "eEvolution GmbH & Co. KG" -u http://eEvolution.de -kvu https://localhost:7036 -kvt spilker -kvi eEvolution.Sign -kvs Ts52Xavc8hM -o signed\"
+    // ".\eEvolution.Sign.exe" code eevo-pkcs11-token-local *.dll -kvc 9505299957EED70137B0CD033DDB3F2AA027A6DB -d "eEvolution GmbH & Co. KG" -u http://eEvolution.de -kvu https://localhost:7036 -kvt spilker -kvi eEvolution.Sign -kvs Ts52Xavc8hM -o signed\"
     ////internal Option<string> CertificateOption { get; } = new(new[] { "-kvc", "--azure-key-vault-certificate" }, AzureKeyVaultResources.CertificateOptionDescription);
     ////internal Option<string?> ClientIdOption { get; } = new(new[] { "-kvi", "--azure-key-vault-client-id" }, AzureKeyVaultResources.ClientIdOptionDescription);
     ////internal Option<string?> ClientSecretOption { get; } = new(new[] { "-kvs", "--azure-key-vault-client-secret" }, AzureKeyVaultResources.ClientSecretOptionDescription);
@@ -27,16 +30,35 @@ namespace eEvolution.Sign.Cli
 
     #region Constructors
 
-    internal Pkcs11TokenRemoteCommand(CodeCommand codeCommand, IServiceProviderFactory serviceProviderFactory)
-        : base("pkcs11-token-remote", "Verwenden Sie Pkcs11-Token-Remote")
+    internal EEvoPkcs11TokenLocalCommand(CodeCommand codeCommand, IServiceProviderFactory serviceProviderFactory)
+        : base("eevo-pkcs11-token-local", "Verwenden Sie EEvo-Pkcs11-Token-Local")
     {
       ArgumentNullException.ThrowIfNull(codeCommand, nameof(codeCommand));
       ArgumentNullException.ThrowIfNull(serviceProviderFactory, nameof(serviceProviderFactory));
 
-      // Der IKeyVaultService für das AzureKeyVaultCommand muss durch unsere Implementierung überschrieben werden.
-      var services = new ServiceCollection();
-      services.AddSingleton<IKeyVaultService>(new Pkcs11KeyVaultServiceWrapper(useLocalClient: false));
-      var wrappedServiceProviderFactory = new ServiceProviderFactoryWrapper(serviceProviderFactory, services);
+      var wrappedServiceProviderFactory = new ServiceProviderFactoryWrapper(serviceProviderFactory);
+      wrappedServiceProviderFactory.Configure += (_, parentProviderAndDefaultServiceCollection) =>
+        {
+          var services = parentProviderAndDefaultServiceCollection.servicesWithDefaults;
+
+          // Der IKeyVaultService für das AzureKeyVaultCommand muss durch unsere Implementierung überschrieben werden.
+          services.Replace(
+            ServiceDescriptor.Singleton<
+              IKeyVaultService>(
+              new EEvoPkcs11KeyVaultServiceAdaptor(useLocalClient: true)));
+
+          // Jsign statt AzureSignToolSignatureProvider
+          // TODO: konfigurierbar machen und ggf. mit neuem Aggregator nur die nicht unterstützten Dateitypen austauschen.
+          // Vorteile derzeit: Läuft auf unserem Buildserver unter unter Windows 8, unterstützt das Append von Signaturen oder skippen von bereits signierten Files.
+          services.ReplaceExact(
+            ServiceDescriptor.Singleton<ISignatureProvider, AzureSignToolSignatureProvider>(),
+            ServiceDescriptor.Singleton<ISignatureProvider, JSignSignatureProvider>());
+
+          services.Replace(
+            ServiceDescriptor.Singleton<
+              IDefaultSignatureProvider, 
+              DefaultSignatureProvider<JSignSignatureProvider>>());
+        };
 
       _codeCommand = codeCommand;
       _azureKeyVaultCommand = new AzureKeyVaultCommand(codeCommand, wrappedServiceProviderFactory);
@@ -50,13 +72,12 @@ namespace eEvolution.Sign.Cli
 
       AddArgument(_azureKeyVaultCommand.FileArgument);
 
-      this.SetHandler(async (InvocationContext context) =>
+      this.SetHandler(async (context) =>
       {
         await _azureKeyVaultCommand.Handler!.InvokeAsync(context);
       });
     }
 
     #endregion Constructors
-
   }
 }

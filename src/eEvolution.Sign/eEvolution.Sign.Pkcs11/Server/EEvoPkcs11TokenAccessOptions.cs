@@ -6,7 +6,7 @@ namespace eEvolution.Sign.Pkcs11.Server
 {
   using Microsoft.Extensions.Configuration;
 
-  internal class Pkcs11TokenAccessOptions
+  internal class EEvoPkcs11TokenAccessOptions
   {
     #region Properties
 
@@ -19,10 +19,10 @@ namespace eEvolution.Sign.Pkcs11.Server
 
     #region Methods
 
-    internal static Pkcs11TokenAccessOptions GetInstance()
+    internal static EEvoPkcs11TokenAccessOptions GetInstance()
     {
       var configurationBuilder = new ConfigurationBuilder();
-      var basePath = new FileInfo(typeof(Pkcs11TokenAccessOptions).Assembly.Location).DirectoryName!;
+      var basePath = new FileInfo(typeof(EEvoPkcs11TokenAccessOptions).Assembly.Location).DirectoryName!;
 
       configurationBuilder
           .SetBasePath(basePath)
@@ -30,8 +30,8 @@ namespace eEvolution.Sign.Pkcs11.Server
           .AddEnvironmentVariables();
 
       var configurationRoot = configurationBuilder.Build();
-      var section = configurationRoot.GetRequiredSection(nameof(Pkcs11TokenAccessOptions));
-      var options = section.Get<Pkcs11TokenAccessOptions>();
+      var section = configurationRoot.GetRequiredSection(nameof(EEvoPkcs11TokenAccessOptions));
+      var options = section.Get<EEvoPkcs11TokenAccessOptions>();
 
       return options!;
     }

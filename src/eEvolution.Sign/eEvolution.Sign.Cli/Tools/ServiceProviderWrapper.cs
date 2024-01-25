@@ -1,6 +1,5 @@
-﻿namespace eEvolution.Sign.Cli
+﻿namespace eEvolution.Sign.Cli.Tools
 {
-  using global::Sign.Core;
   using Microsoft.Extensions.DependencyInjection;
   using System;
 
@@ -10,8 +9,8 @@
 
     public ServiceProviderWrapper(IServiceProvider parent, IServiceCollection serviceCollection)
     {
-      this.Parent = parent;
-      this.Own = serviceCollection.BuildServiceProvider();
+      Parent = parent;
+      Own = serviceCollection.BuildServiceProvider();
     }
 
     #endregion Constructors
@@ -27,18 +26,18 @@
 
     public object? GetService(Type serviceType)
     {
-      var isEnumerable = serviceType.IsGenericType 
+      var isEnumerable = serviceType.IsGenericType
                          && typeof(IEnumerable<>).IsAssignableFrom(serviceType.GetGenericTypeDefinition());
       if (isEnumerable)
       {
         var enumerableType = serviceType.GenericTypeArguments[0];
-        var enumerableResult = this.Parent.GetServices(enumerableType)
-                          .Concat(this.Own.GetServices(enumerableType))
+        var enumerableResult = Parent.GetServices(enumerableType)
+                          .Concat(Own.GetServices(enumerableType))
                           .ToArray();
         return enumerableResult;
       }
 
-      var result = this.Own.GetService(serviceType) ?? this.Parent.GetService(serviceType);
+      var result = Own.GetService(serviceType) ?? Parent.GetService(serviceType);
       return result;
     }
 

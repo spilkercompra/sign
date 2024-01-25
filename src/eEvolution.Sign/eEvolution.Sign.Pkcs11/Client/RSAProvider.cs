@@ -11,16 +11,16 @@ namespace eEvolution.Sign.Pkcs11.Client
   {
     #region Constructors
 
-    public RSAProvider(Pkcs11TokenClientBase pkcs11TokenClientBase)
+    public RSAProvider(EEvoPkcs11TokenClientBase pkcs11TokenClientBase)
     {
-      this.Pkcs11TokenClientBase = pkcs11TokenClientBase;
+      this.EEvoPkcs11TokenClientBase = pkcs11TokenClientBase;
     }
 
     #endregion Constructors
 
     #region Properties
 
-    private Pkcs11TokenClientBase Pkcs11TokenClientBase { get; }
+    private EEvoPkcs11TokenClientBase EEvoPkcs11TokenClientBase { get; }
 
     #endregion Properties
 
@@ -67,7 +67,7 @@ namespace eEvolution.Sign.Pkcs11.Client
         throw new NotSupportedException($"Padding {padding} is not supported");
       }
 
-      return Task.Run(() => this.Pkcs11TokenClientBase.SignHashAsync(hash, hashAlgorithm, padding)).GetAwaiter().GetResult();
+      return Task.Run(async () => await this.EEvoPkcs11TokenClientBase.SignHashAsync(hash, hashAlgorithm, padding)).GetAwaiter().GetResult();
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ namespace eEvolution.Sign.Pkcs11.Client
         throw new NotSupportedException($"Padding {padding} is not supported");
       }
 
-      return Task.Run(() => this.Pkcs11TokenClientBase.VerifyHashAsync(hash, signature, hashAlgorithm, padding)).GetAwaiter().GetResult();
+      return Task.Run(async () => await this.EEvoPkcs11TokenClientBase.VerifyHashAsync(hash, signature, hashAlgorithm, padding)).GetAwaiter().GetResult();
     }
 
     #endregion Methods
