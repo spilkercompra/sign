@@ -12,13 +12,6 @@ namespace eEvolution.Sign.Cli.Commands
 
   internal sealed class EEvoPkcs11TokenRemoteCommand : Command
   {
-    #region Fields
-
-    private readonly AzureKeyVaultCommand _azureKeyVaultCommand;
-    private readonly CodeCommand _codeCommand;
-
-    #endregion Fields
-
     // ".\eEvolution.Sign.exe" code eevo-pkcs11-token-remote *.dll -kvc 9505299957EED70137B0CD033DDB3F2AA027A6DB -d "eEvolution GmbH & Co. KG" -u http://eEvolution.de -kvu https://localhost:7036 -kvt spilker -kvi eEvolution.Sign -kvs Ts52Xavc8hM -o signed\"
     ////internal Option<string> CertificateOption { get; } = new(new[] { "-kvc", "--azure-key-vault-certificate" }, AzureKeyVaultResources.CertificateOptionDescription);
     ////internal Option<string?> ClientIdOption { get; } = new(new[] { "-kvi", "--azure-key-vault-client-id" }, AzureKeyVaultResources.ClientIdOptionDescription);
@@ -33,49 +26,15 @@ namespace eEvolution.Sign.Cli.Commands
     internal EEvoPkcs11TokenRemoteCommand(CodeCommand codeCommand, IServiceProviderFactory serviceProviderFactory)
         : base("eevo-pkcs11-token-remote", "Verwenden Sie EEvo-Pkcs11-Token-Remote")
     {
-      ArgumentNullException.ThrowIfNull(codeCommand, nameof(codeCommand));
-      ArgumentNullException.ThrowIfNull(serviceProviderFactory, nameof(serviceProviderFactory));
-
-      var wrappedServiceProviderFactory = new ServiceProviderFactoryWrapper(serviceProviderFactory);
-      wrappedServiceProviderFactory.Configure += (_, parentProviderAndDefaultServiceCollection) =>
-         {
-           var services = parentProviderAndDefaultServiceCollection.servicesWithDefaults;
-
-           // Der IKeyVaultService für das AzureKeyVaultCommand muss durch unsere Implementierung überschrieben werden.
-           services.Replace(
-             ServiceDescriptor.Singleton<
-               IKeyVaultService>(
-               new EEvoPkcs11KeyVaultServiceAdaptor(useLocalClient: false)));
-
-           // Jsign statt AzureSignToolSignatureProvider
-           // TODO: konfigurierbar machen und ggf. mit neuem Aggregator nur die nicht unterstützten Dateitypen austauschen.
-           // Vorteile derzeit: Läuft auf unserem Buildserver unter unter Windows 8, unterstützt das Append von Signaturen oder skippen von bereits signierten Files.
-           services.ReplaceExact(
-             ServiceDescriptor.Singleton<ISignatureProvider, AzureSignToolSignatureProvider>(),
-             ServiceDescriptor.Singleton<ISignatureProvider, JSignSignatureProvider>());
-
-           services.Replace(
-             ServiceDescriptor.Singleton<
-               IDefaultSignatureProvider,
-               DefaultSignatureProvider<JSignSignatureProvider>>());
-         };
-
-      _codeCommand = codeCommand;
-      _azureKeyVaultCommand = new AzureKeyVaultCommand(codeCommand, wrappedServiceProviderFactory);
-
-      AddOption(_azureKeyVaultCommand.UrlOption);
-      AddOption(_azureKeyVaultCommand.TenantIdOption);
-      AddOption(_azureKeyVaultCommand.ClientIdOption);
-      AddOption(_azureKeyVaultCommand.ClientSecretOption);
-      AddOption(_azureKeyVaultCommand.CertificateOption);
-      AddOption(_azureKeyVaultCommand.ManagedIdentityOption);
-
-      AddArgument(_azureKeyVaultCommand.FileArgument);
-
-      this.SetHandler(async (context) =>
-      {
-        await _azureKeyVaultCommand.Handler!.InvokeAsync(context);
-      });
+      EEvoPkcs11TokenCommandHandler.SetupEEvoPkcs11TokenCommand(
+        this, 
+        codeCommand, 
+        serviceProviderFactory,
+        new EEvoPkcs11TokenCommandHandlerOptions()
+        {
+          UseLocalClient = false,
+          UseJSign = true
+        });
     }
 
     #endregion Constructors

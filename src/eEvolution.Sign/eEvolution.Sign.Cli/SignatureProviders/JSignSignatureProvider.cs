@@ -18,7 +18,8 @@ namespace eEvolution.Sign.Cli.SignatureProviders
     {
         #region Fields
 
-        private readonly IKeyVaultService _keyVaultService;
+        private readonly ISignatureAlgorithmProvider _signatureAlgorithmProvider;
+        private readonly ICertificateProvider _certificateProvider;
         private readonly ILogger _logger;
         private readonly HashSet<string> _supportedFileExtensions;
         private readonly IToolConfigurationProvider _toolConfigurationProvider;
@@ -30,14 +31,18 @@ namespace eEvolution.Sign.Cli.SignatureProviders
         // Dependency injection requires a public constructor.
         public JSignSignatureProvider(
             IToolConfigurationProvider toolConfigurationProvider,
-            IKeyVaultService keyVaultService,
+            ISignatureAlgorithmProvider signatureAlgorithmProvider,
+            ICertificateProvider certificateProvider,
             ILogger<ISignatureProvider> logger)
         {
             ArgumentNullException.ThrowIfNull(toolConfigurationProvider, nameof(toolConfigurationProvider));
-            ArgumentNullException.ThrowIfNull(keyVaultService, nameof(keyVaultService));
+            ArgumentNullException.ThrowIfNull(signatureAlgorithmProvider, nameof(signatureAlgorithmProvider));
+            ArgumentNullException.ThrowIfNull(certificateProvider, nameof(certificateProvider));
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
-            _keyVaultService = keyVaultService;
+            _signatureAlgorithmProvider = signatureAlgorithmProvider;
+            _certificateProvider = certificateProvider;
+            _signatureAlgorithmProvider = signatureAlgorithmProvider;
             _logger = logger;
             _toolConfigurationProvider = toolConfigurationProvider;
 
@@ -79,8 +84,8 @@ namespace eEvolution.Sign.Cli.SignatureProviders
                 timestampConfiguration = new(options.TimestampService.AbsoluteUri, options.TimestampHashAlgorithm, TimeStampType.RFC3161);
             }
 
-            using (X509Certificate2 certificate = await _keyVaultService.GetCertificateAsync())
-            using (RSA rsa = await _keyVaultService.GetRsaAsync())
+            using (X509Certificate2 certificate = await _certificateProvider.GetCertificateAsync())
+            using (RSA rsa = await _signatureAlgorithmProvider.GetRsaAsync())
             using (JSignSigner signer = new(
                 rsa,
                 certificate,
