@@ -3,12 +3,6 @@ namespace eEvolution.Sign.Cli.Commands
   using System.CommandLine;
   using global::Sign.Core;
   using global::Sign.Cli;
-  using System;
-  using Microsoft.Extensions.DependencyInjection;
-  using eEvolution.Sign.Cli.KeyVault;
-  using eEvolution.Sign.Cli.Tools;
-  using eEvolution.Sign.Cli.SignatureProviders;
-  using Microsoft.Extensions.DependencyInjection.Extensions;
 
   internal sealed class EEvoPkcs11TokenRemoteCommand : Command
   {

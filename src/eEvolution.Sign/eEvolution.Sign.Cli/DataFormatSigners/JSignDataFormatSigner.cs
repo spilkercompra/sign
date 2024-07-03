@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE.txt file in the project root for more information.
 
-namespace eEvolution.Sign.Cli.SignatureProviders
+namespace eEvolution.Sign.Cli.DataFormatSigners
 {
     using eEvolution.Sign.JSign;
     using global::Sign.Core;
@@ -14,7 +14,7 @@ namespace eEvolution.Sign.Cli.SignatureProviders
     using System.Security.Cryptography.X509Certificates;
     using System.Threading.Tasks;
 
-    public class JSignSignatureProvider : ISignatureProvider
+    public class JSignDataFormatSigner : IDataFormatSigner
     {
         #region Fields
 
@@ -29,7 +29,7 @@ namespace eEvolution.Sign.Cli.SignatureProviders
         #region Constructors
 
         // Dependency injection requires a public constructor.
-        public JSignSignatureProvider(
+        public JSignDataFormatSigner(
             IToolConfigurationProvider toolConfigurationProvider,
             ISignatureAlgorithmProvider signatureAlgorithmProvider,
             ICertificateProvider certificateProvider,
