@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsShipping>true</IsShipping>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Azure.Security.KeyVault.Certificates" PrivateAssets="analyzers;build;compile;contentfiles" />
+    <PackageReference Include="RSAKeyVaultProvider" PrivateAssets="analyzers;build;compile;contentfiles" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sign.Core\Sign.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="sign" />
+    <InternalsVisibleTo Include="Sign.SignatureProviders.KeyVault.Test" />
+  </ItemGroup>
+
+</Project>

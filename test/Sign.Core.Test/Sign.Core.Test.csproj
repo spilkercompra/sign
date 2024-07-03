@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$(RepositoryRootDirectory)\SdkTools.props" />
 
   <PropertyGroup>
@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Sign.Core\Sign.Core.csproj" />
+    <ProjectReference Include="..\Sign.TestInfrastructure\Sign.TestInfrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

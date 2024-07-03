@@ -88,6 +88,33 @@ namespace Sign.Cli {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Client ID to authenticate to Azure..
+        /// </summary>
+        internal static string ClientIdOptionDescription {
+            get {
+                return ResourceManager.GetString("ClientIdOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client secret to authenticate to Azure..
+        /// </summary>
+        internal static string ClientSecretOptionDescription {
+            get {
+                return ResourceManager.GetString("ClientSecretOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The client secret options are obsolete and should no longer be specified..
+        /// </summary>
+        internal static string ClientSecretOptionsObsolete {
+            get {
+                return ResourceManager.GetString("ClientSecretOptionsObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign binaries and containers..
         /// </summary>
         internal static string CodeCommandDescription {
@@ -115,7 +142,7 @@ namespace Sign.Cli {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Digest algorithm to hash files with. Allowed values are &apos;Sha256&apos;, &apos;Sha384&apos;, and &apos;Sha512&apos;..
+        ///   Looks up a localized string similar to Digest algorithm to hash files with. Allowed values are &apos;sha256&apos;, &apos;sha384&apos;, and &apos;sha512&apos;..
         /// </summary>
         internal static string FileDigestOptionDescription {
             get {
@@ -133,6 +160,15 @@ namespace Sign.Cli {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File(s) to sign..
+        /// </summary>
+        internal static string FilesArgumentDescription {
+            get {
+                return ResourceManager.GetString("FilesArgumentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid value for {0}. The value must be a fully rooted directory path..
         /// </summary>
         internal static string InvalidBaseDirectoryValue {
@@ -142,11 +178,29 @@ namespace Sign.Cli {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid value for {0}. The value must be &apos;Sha256&apos;, &apos;Sha384&apos;, or &apos;Sha512&apos;..
+        ///   Looks up a localized string similar to Invalid value for {0}. The value must be a SHA-256, SHA-384, or SHA-512 certificate fingerprint (in hexadecimal)..
+        /// </summary>
+        internal static string InvalidCertificateFingerprintValue {
+            get {
+                return ResourceManager.GetString("InvalidCertificateFingerprintValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid value for {0}. The value must be &apos;sha256&apos;, &apos;sha384&apos;, or &apos;sha512&apos;..
         /// </summary>
         internal static string InvalidDigestValue {
             get {
                 return ResourceManager.GetString("InvalidDigestValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file path cannot be rooted when using a glob. Use a path relative to the working directory (or base directory, if used)..
+        /// </summary>
+        internal static string InvalidFileValue {
+            get {
+                return ResourceManager.GetString("InvalidFileValue", resourceCulture);
             }
         }
         
@@ -160,15 +214,6 @@ namespace Sign.Cli {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid value for {0}. The value must be the certificate&apos;s SHA-1 thumbprint..
-        /// </summary>
-        internal static string InvalidSha1ThumbprintValue {
-            get {
-                return ResourceManager.GetString("InvalidSha1ThumbprintValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Invalid value for {0}. The value must be an absolute HTTP or HTTPS URL..
         /// </summary>
         internal static string InvalidUrlValue {
@@ -178,11 +223,65 @@ namespace Sign.Cli {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The client id of a user assigned ManagedIdentity..
+        /// </summary>
+        internal static string ManagedIdentityClientIdOptionDescription {
+            get {
+                return ResourceManager.GetString("ManagedIdentityClientIdOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Managed identity to authenticate to Azure Key. (obsolete).
+        /// </summary>
+        internal static string ManagedIdentityOptionDescription {
+            get {
+                return ResourceManager.GetString("ManagedIdentityOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The -kvm and --azure-key-vault-managed-identity options are obsolete and should no longer be specified..
+        /// </summary>
+        internal static string ManagedIdentityOptionObsolete {
+            get {
+                return ResourceManager.GetString("ManagedIdentityOptionObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The resource id of a user assigned ManagedIdentity..
+        /// </summary>
+        internal static string ManagedIdentityResourceIdOptionDescription {
+            get {
+                return ResourceManager.GetString("ManagedIdentityResourceIdOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Maximum concurrency..
         /// </summary>
         internal static string MaxConcurrencyOptionDescription {
             get {
                 return ResourceManager.GetString("MaxConcurrencyOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A file or glob is required..
+        /// </summary>
+        internal static string MissingFileValue {
+            get {
+                return ResourceManager.GetString("MissingFileValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No inputs found to sign..
+        /// </summary>
+        internal static string NoFilesToSign {
+            get {
+                return ResourceManager.GetString("NoFilesToSign", resourceCulture);
             }
         }
         
@@ -214,7 +313,25 @@ namespace Sign.Cli {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Digest algorithm for the RFC 3161 timestamp server. Allowed values are Sha256, Sha384, and Sha512..
+        ///   Looks up a localized string similar to Some files do not exist.  Try using a different {0} value or a fully qualified file path..
+        /// </summary>
+        internal static string SomeFilesDoNotExist {
+            get {
+                return ResourceManager.GetString("SomeFilesDoNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tenant ID to authenticate to Azure..
+        /// </summary>
+        internal static string TenantIdOptionDescription {
+            get {
+                return ResourceManager.GetString("TenantIdOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Digest algorithm for the RFC 3161 timestamp server. Allowed values are sha256, sha384, and sha512..
         /// </summary>
         internal static string TimestampDigestOptionDescription {
             get {
