@@ -19,7 +19,7 @@
     #region Properties
 
     private IServiceProviderFactory Parent { get; }
-    public Action<IServiceCollection>? ReplaceParentAddServices { get; set; }
+    public Action<IServiceCollection>? AfterAddServices { get; set; }
 
     #endregion Properties
 
@@ -27,7 +27,12 @@
 
     public IServiceProvider Create(LogLevel logLevel = LogLevel.Information, ILoggerProvider? loggerProvider = null, Action<IServiceCollection>? addServices = null)
     {
-      return this.Parent.Create(logLevel, loggerProvider, this.ReplaceParentAddServices ?? addServices);
+      var combinedAddServices = new Action<IServiceCollection>(serviceCollection =>
+      {
+          addServices?.Invoke(serviceCollection);
+          this.AfterAddServices?.Invoke(serviceCollection);
+      });
+      return this.Parent.Create(logLevel, loggerProvider, combinedAddServices);
     }
 
     #endregion Methods

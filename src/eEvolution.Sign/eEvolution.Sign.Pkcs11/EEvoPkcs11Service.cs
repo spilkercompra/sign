@@ -10,7 +10,7 @@ namespace eEvolution.Sign.Pkcs11
   using System.Security.Cryptography;
   using System.Security.Cryptography.X509Certificates;
 
-  public class EEvoPkcs11KeyVaultService
+  public class EEvoPkcs11Service
   {
     #region Fields
 
@@ -20,7 +20,7 @@ namespace eEvolution.Sign.Pkcs11
 
     #region Constructors
 
-    public EEvoPkcs11KeyVaultService(bool useLocalClient)
+    public EEvoPkcs11Service(bool useLocalClient)
     {
       if (useLocalClient)
       {

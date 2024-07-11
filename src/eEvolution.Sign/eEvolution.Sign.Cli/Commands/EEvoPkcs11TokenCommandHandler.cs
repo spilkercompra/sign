@@ -1,68 +1,81 @@
 ﻿namespace eEvolution.Sign.Cli.Commands
 {
-    using System.CommandLine;
-    using global::Sign.Core;
-    using global::Sign.Cli;
-    using System;
-    using Microsoft.Extensions.DependencyInjection;
-    using eEvolution.Sign.Cli.Tools;
     using eEvolution.Sign.Cli.DataFormatSigners;
-    using eEvolution.Sign.Cli.KeyVault;
+    using eEvolution.Sign.Cli.SignatureProviders;
+    using eEvolution.Sign.Cli.Tools;
+    using global::Sign.Cli;
+    using global::Sign.Core;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using System;
+    using System.CommandLine;
+    using System.CommandLine.IO;
+    using Resources = global::Sign.Cli.Resources;
 
     internal static class EEvoPkcs11TokenCommandHandler
     {
+        #region Methods
+
         internal static void SetupEEvoPkcs11TokenCommand(Command eevoPkcs11TokenCommand, CodeCommand codeCommand, IServiceProviderFactory serviceProviderFactory, EEvoPkcs11TokenCommandHandlerOptions options)
         {
             ArgumentNullException.ThrowIfNull(codeCommand, nameof(codeCommand));
             ArgumentNullException.ThrowIfNull(serviceProviderFactory, nameof(serviceProviderFactory));
 
-            var wrappedServiceProviderFactory = new ServiceProviderFactoryWrapper(serviceProviderFactory);
-            var azureKeyVaultCommand = new AzureKeyVaultCommand(codeCommand, wrappedServiceProviderFactory);
+            options.UrlOption.IsRequired = true;
+            options.CertificateOption.IsRequired = true;
 
-            azureKeyVaultCommand.UrlOption.IsRequired = true;
-            azureKeyVaultCommand.CertificateOption.IsRequired = true;
-            azureKeyVaultCommand.AzureCredentialOptions.ObsoleteTenantIdOption.IsRequired = true;
-            azureKeyVaultCommand.AzureCredentialOptions.ObsoleteClientIdOption.IsRequired = true;
-            azureKeyVaultCommand.AzureCredentialOptions.ObsoleteClientSecretOption.IsRequired = true;
-            azureKeyVaultCommand.AzureCredentialOptions.ObsoleteTenantIdOption.IsHidden = false;
-            azureKeyVaultCommand.AzureCredentialOptions.ObsoleteClientIdOption.IsHidden = false;
-            azureKeyVaultCommand.AzureCredentialOptions.ObsoleteClientSecretOption.IsHidden = false;
-            azureKeyVaultCommand.AzureCredentialOptions.ObsoleteManagedIdentityOption.IsHidden = true;
+            options.CredentialOptions.TenantIdOption.IsRequired = true;
+            options.CredentialOptions.ClientIdOption.IsRequired = true;
+            options.CredentialOptions.ClientSecretOption.IsRequired = true;
+            options.CredentialOptions.TenantIdOption.IsHidden = false;
+            options.CredentialOptions.ClientIdOption.IsHidden = false;
+            options.CredentialOptions.ClientSecretOption.IsHidden = false;
 
-            eevoPkcs11TokenCommand.AddOption(azureKeyVaultCommand.UrlOption);
-            eevoPkcs11TokenCommand.AddOption(azureKeyVaultCommand.CertificateOption);
-            eevoPkcs11TokenCommand.AddOption(azureKeyVaultCommand.AzureCredentialOptions.ObsoleteTenantIdOption);
-            eevoPkcs11TokenCommand.AddOption(azureKeyVaultCommand.AzureCredentialOptions.ObsoleteClientIdOption);
-            eevoPkcs11TokenCommand.AddOption(azureKeyVaultCommand.AzureCredentialOptions.ObsoleteClientSecretOption);
-            eevoPkcs11TokenCommand.AddOption(azureKeyVaultCommand.AzureCredentialOptions.ObsoleteManagedIdentityOption);
+            eevoPkcs11TokenCommand.AddOption(options.UrlOption);
+            eevoPkcs11TokenCommand.AddOption(options.CertificateOption);
+            eevoPkcs11TokenCommand.AddOption(options.CredentialOptions.TenantIdOption);
+            eevoPkcs11TokenCommand.AddOption(options.CredentialOptions.ClientIdOption);
+            eevoPkcs11TokenCommand.AddOption(options.CredentialOptions.ClientSecretOption);
 
-            eevoPkcs11TokenCommand.AddArgument(azureKeyVaultCommand.FileArgument);
+            eevoPkcs11TokenCommand.AddArgument(options.FileArgument);
 
             eevoPkcs11TokenCommand.SetHandler(async (context) =>
             {
-                var url = context.ParseResult.GetValueForOption(azureKeyVaultCommand.UrlOption);
-                var tenantId = context.ParseResult.GetValueForOption(azureKeyVaultCommand.AzureCredentialOptions.ObsoleteTenantIdOption);
-                var clientId = context.ParseResult.GetValueForOption(azureKeyVaultCommand.AzureCredentialOptions.ObsoleteClientIdOption);
-                var secret = context.ParseResult.GetValueForOption(azureKeyVaultCommand.AzureCredentialOptions.ObsoleteClientSecretOption);
-                var certificateId = context.ParseResult.GetValueForOption(azureKeyVaultCommand.CertificateOption);
+                string? fileArgument = context.ParseResult.GetValueForArgument(options.FileArgument);
 
-                wrappedServiceProviderFactory.ReplaceParentAddServices = (IServiceCollection services) =>
+                if (string.IsNullOrEmpty(fileArgument))
+                {
+                    context.Console.Error.WriteLine(Resources.MissingFileValue);
+                    context.ExitCode = ExitCode.InvalidOptions;
+                    return;
+                }
+
+                // this check exists as a courtesy to users who may have been signing .clickonce files via the old workaround.
+                // at some point we should remove this check, probably once we hit v1.0
+                if (fileArgument.EndsWith(".clickonce", StringComparison.OrdinalIgnoreCase))
+                {
+                    context.Console.Error.WriteLine(AzureKeyVaultResources.ClickOnceExtensionNotSupported);
+                    context.ExitCode = ExitCode.InvalidOptions;
+                    return;
+                }
+
+                // Some of the options are required and that is why we can safely use
+                // the null-forgiving operator (!) to simplify the code.
+                Uri url = context.ParseResult.GetValueForOption(options.UrlOption)!;
+                string certificateId = context.ParseResult.GetValueForOption(options.CertificateOption)!;
+
+                var tenantId = context.ParseResult.GetValueForOption(options.CredentialOptions.TenantIdOption)!;
+                var clientId = context.ParseResult.GetValueForOption(options.CredentialOptions.ClientIdOption)!;
+                var secret = context.ParseResult.GetValueForOption(options.CredentialOptions.ClientSecretOption)!;
+
+                var useJSign = context.ParseResult.GetValueForOption(options.UseJSignOption) ?? true;
+                var wrappedServiceProviderFactory = new ServiceProviderFactoryWrapper(serviceProviderFactory);
+                wrappedServiceProviderFactory.AfterAddServices = (IServiceCollection services) =>
                   {
-                      // ISignatureAlgorithmProvider und ICertificateProvider müssen statt AzureKeyVaultCommand durch unsere Implementierung ersetzt werden.
-                      var keyVaultServiceAdaptor = new EEvoPkcs11KeyVaultServiceAdaptor(
-                          useLocalClient: options.UseLocalClient,
-                          keyVaultUrl: url!,
-                          tokenCredential: (tenantId!, clientId!, secret!),
-                          certificateId!);
-
-                      services.AddSingleton<ISignatureAlgorithmProvider>(keyVaultServiceAdaptor);
-                      services.AddSingleton<ICertificateProvider>(keyVaultServiceAdaptor);
-
                       // Jsign statt AzureSignToolSignatureProvider
-                      // TODO: konfigurierbar machen und ggf. mit neuem Aggregator nur die nicht unterstützten Dateitypen austauschen.
+                      // TODO: ggf. mit neuem Aggregator nur die nicht unterstützten Dateitypen austauschen.
                       // Vorteile derzeit: Läuft auf unserem Buildserver unter unter Windows 8, unterstützt das Append von Signaturen oder skippen von bereits signierten Files.
-                      if (options.UseJSign)
+                      if (useJSign)
                       {
                           services.ReplaceExact(
                               ServiceDescriptor.Singleton<IDataFormatSigner, AzureSignToolSigner>(),
@@ -75,8 +88,15 @@
                       }
                   };
 
-                await azureKeyVaultCommand.Handler!.InvokeAsync(context);
+                var eevoPkcs11ServiceProvider = new EEvoPkcs11ServiceProvider(
+                   useLocalClient: options.UseLocalClient,
+                   keyVaultUrl: url,
+                   tokenCredential: (tenantId, clientId, secret),
+                   certificateId);
+                await codeCommand.HandleAsync(context, wrappedServiceProviderFactory, eevoPkcs11ServiceProvider, fileArgument);
             });
         }
+
+        #endregion Methods
     }
 }

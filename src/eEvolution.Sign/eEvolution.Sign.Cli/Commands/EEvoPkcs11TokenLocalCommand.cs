@@ -11,7 +11,6 @@ namespace eEvolution.Sign.Cli.Commands
     ////internal Option<string?> ClientIdOption { get; } = new(new[] { "-kvi", "--azure-key-vault-client-id" }, AzureKeyVaultResources.ClientIdOptionDescription);
     ////internal Option<string?> ClientSecretOption { get; } = new(new[] { "-kvs", "--azure-key-vault-client-secret" }, AzureKeyVaultResources.ClientSecretOptionDescription);
     ////internal Argument<string?> FileArgument { get; } = new("file(s)", AzureKeyVaultResources.FilesArgumentDescription);
-    ////internal Option<bool> ManagedIdentityOption { get; } = new(new[] { "-kvm", "--azure-key-vault-managed-identity" }, getDefaultValue: () => false, AzureKeyVaultResources.ManagedIdentityOptionDescription);
     ////internal Option<string?> TenantIdOption { get; } = new(new[] { "-kvt", "--azure-key-vault-tenant-id" }, AzureKeyVaultResources.TenantIdOptionDescription);
     ////internal Option<Uri> UrlOption { get; } = new(new[] { "-kvu", "--azure-key-vault-url" }, AzureKeyVaultResources.UrlOptionDescription);
 
@@ -26,8 +25,7 @@ namespace eEvolution.Sign.Cli.Commands
         serviceProviderFactory,
         new EEvoPkcs11TokenCommandHandlerOptions()
         {
-          UseLocalClient = true,
-          UseJSign = true
+          UseLocalClient = true
         });
     }
 
